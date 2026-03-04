@@ -1,10 +1,13 @@
 NAME := minishell
 
-SRC := main.c
+SRC := main.c ft_parsing.c
+
 
 SRC_DIR := ./srcs/
 OBJ_DIR := ./objects/
 BIN_DIR := ./bin/
+
+ALL_SRCS := $(addprefix $(SRC_DIR), $(SRC))
 
 LIBFT := libft/libft.a
 LIBFT_DIR := libft/
@@ -48,7 +51,7 @@ $(BIN_DIR)$(NAME): $(OBJ)
 
 debug: $(LIBFT)
 	@echo "[COMPILING DEBUG] $^"
-	@$(CC) $(CFLAGS) $(DEBUG_FLAGS) -I$(INCLUDES) -o $(BIN_DIR)$(NAME) $(SRC_DIR)$(SRC) -Llibft -lft
+	@$(CC) $(CFLAGS) $(DEBUG_FLAGS) -I$(INCLUDES) -o $(BIN_DIR)$(NAME) $(ALL_SRCS) -Llibft -lft
 
 clean:
 	@printf "[DELETING] Object files\n"
