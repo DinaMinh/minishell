@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 11:45:38 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/04 13:54:37 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/04 15:47:52 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ char	*ft_check_redir(t_args *args)
 char	**ft_get_cmd(t_args *args)
 {
 	int	cmd_len;
+	int	cmd_index;
 
 	args->input_name = ft_check_redir(args);
 	args->cmd = ft_split(args->input_name, ' ');
@@ -40,8 +41,10 @@ char	**ft_get_cmd(t_args *args)
 	if (!args->cmd_path)
 		return (NULL);
 	ft_strlcpy(args->cmd_path, PATH, PATH_LEN);
-	args->cmd_path = ft_strncat(args->cmd_path, args->cmd[0], cmd_len);
-	if (access(args->cmd_path, F_OK) == -1)
+	if (args->redirect != 0)
+		cmd_index = 1;
+	args->cmd_path = ft_strncat(args->cmd_path, args->cmd[cmd_index], cmd_len);
+	if (access(args->cmd_path, F_OK) == -1 && args->redirect == 0)
 		return (NULL);
 	return (args->cmd);
 }
