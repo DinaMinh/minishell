@@ -1,8 +1,7 @@
 NAME := minishell
 
-SRC := main.c ft_parsing.c
-
-
+SRC := main.c ft_parsing.c ft_lexer.c ft_lexer_utils.c ft_token_utils.c \
+	ft_exit.c
 SRC_DIR := ./srcs/
 OBJ_DIR := ./objects/
 BIN_DIR := ./bin/

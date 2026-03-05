@@ -6,45 +6,36 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 11:45:38 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/04 15:47:52 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/05 17:22:23 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*ft_check_redir(t_args *args)
+char	*ft_check_redir(t_args *args, t_token *token)
 {
-	char	*tmp;
-
-	if (args->input_name[0] == '<' && args->input_name[1])
+	if (token && token->type == TOKEN_REDIR_IN)
 	{
-		tmp = ft_strdup(&args->input_name[1]);
-		free(args->input_name);
-		args->redirect = INFILE;
-		return (tmp);
+		token = token->next;
 	}
-	args->redirect = 0;
-	return (args->input_name);
+	return (args->input);
 }
 
-char	**ft_get_cmd(t_args *args)
+int	ft_get_cmd(t_args *args, t_token *token)
 {
 	int	cmd_len;
 	int	cmd_index;
 
-	args->input_name = ft_check_redir(args);
-	args->cmd = ft_split(args->input_name, ' ');
-	if (!args->cmd)
-		return (NULL);
-	cmd_len = ft_strlen(args->cmd[0]) + PATH_LEN;
+	cmd_index = 0;
+	if (token && token->type != TOKEN_WORD && args->cmd[1])
+		cmd_index = 1;
+	cmd_len = ft_strlen(args->cmd[cmd_index]) + PATH_LEN;
 	args->cmd_path = ft_calloc(cmd_len + 1, sizeof(*args->cmd_path));
 	if (!args->cmd_path)
-		return (NULL);
+		return (1);
 	ft_strlcpy(args->cmd_path, PATH, PATH_LEN);
-	if (args->redirect != 0)
-		cmd_index = 1;
 	args->cmd_path = ft_strncat(args->cmd_path, args->cmd[cmd_index], cmd_len);
 	if (access(args->cmd_path, F_OK) == -1 && args->redirect == 0)
-		return (NULL);
-	return (args->cmd);
+		return (1);
+	return (0);
 }
