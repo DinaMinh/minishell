@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:37:03 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/05 15:43:08 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/09 11:41:39 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,37 +39,6 @@ t_token	*ft_lexer(char *line)
 		return (NULL);
 	}
 	return (token_list);
-}
-
-char	**ft_cmd(t_token *token)
-{
-	t_token	*tmp;
-	char	**cmd;
-	int		size;
-	int		i;
-
-	while (token && token->type != TOKEN_WORD)
-		token = token->next;
-	tmp = token;
-	size = 0;
-	while (tmp && tmp->type == TOKEN_WORD)
-	{
-		size++;
-		tmp = tmp->next;
-	}
-	cmd = ft_calloc(size + 1, sizeof(*cmd));
-	if (!cmd)
-		return (NULL);
-	i = 0;
-	while (token && token->type == TOKEN_WORD)
-	{
-		cmd[i] = ft_strdup(token->content);
-		if (!cmd[i])
-			return (NULL);
-		token = token->next;
-		i++;
-	}
-	return (cmd);
 }
 
 //int	main(void)

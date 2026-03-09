@@ -1,7 +1,8 @@
 NAME := minishell
 
 SRC := main.c ft_parsing.c ft_lexer.c ft_lexer_utils.c ft_token_utils.c \
-	ft_exit.c
+	ft_exit.c ft_cmd.c ft_pipe.c
+
 SRC_DIR := ./srcs/
 OBJ_DIR := ./objects/
 BIN_DIR := ./bin/
@@ -27,6 +28,8 @@ MAKEFLAGS += --no-print-directory
 
 CREATE_OBJ_DIR := mkdir -p $(OBJ_DIR)
 
+CREATE_BIN_DIR := mkdir -p $(BIN_DIR)
+
 all: $(LIBFT) $(BIN_DIR)$(NAME)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c | $(OBJ_DIR)
@@ -40,15 +43,18 @@ $(OBJ_DIR):
 	@echo "[CREATING OBJECT DIRECTORY]"
 	@$(CREATE_OBJ_DIR)
 
-$(BIN_DIR)$(NAME): $(OBJ)
-	@echo "[DONE]"
+$(BIN_DIR): 
+	@echo "[CREATING OBJECT DIRECTORY]"
+	@$(CREATE_BIN_DIR)
+
+$(BIN_DIR)$(NAME): $(OBJ) | $(BIN_DIR)
 	@echo "[COMPILING] $@ binary"
 	@$(CC) $(CFLAGS) $(OBJ) -o $(BIN_DIR)$(NAME) -Llibft -lft
 	@echo "-------------------------------------------------"
 	@echo "|	 Finished compiling $(NAME) ✅ 		|"
 	@echo "-------------------------------------------------"
 
-debug: $(LIBFT)
+debug: $(LIBFT) | $(BIN_DIR)
 	@echo "[COMPILING DEBUG] $^"
 	@$(CC) $(CFLAGS) $(DEBUG_FLAGS) -I$(INCLUDES) -o $(BIN_DIR)$(NAME) $(ALL_SRCS) -Llibft -lft
 
@@ -63,7 +69,7 @@ clean:
 fclean:
 	@$(MAKE) -C ./ clean
 	@printf "[Deleting] %s\n", $(NAME)
-	@rm -f $(BIN_DIR)$(NAME)
+	@rm -rf $(BIN_DIR)
 	@$(MAKE) -C $(LIBFT_DIR) fclean
 	@echo "-------------------------------------------------"
 	@echo "|	   Removed $(NAME) binary ✅	 	|"

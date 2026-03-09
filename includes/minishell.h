@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 16:11:03 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/05 18:16:56 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/09 14:27:30 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,18 +55,25 @@ typedef struct s_token
 	struct s_token			*next;
 }	t_token;
 
+typedef struct s_cmd
+{
+	char			**cmd;
+	char			*cmd_path;
+	struct s_cmd	*next;
+}	t_cmd;
+
 typedef struct s_args
 {
-	char	**cmd;
-	int		fd[2];
-	char	*input;
-	char	*cmd_path;
-	int		redirect;
-	int		return_value;
+	int				fd[2];
+	char			*input;
+	int				nb_cmd;
+	int				redirect;
+	int				return_value;
+	t_cmd			*cmd;
 }	t_args;
 
-char		**ft_cmd(t_token *token);
-int			ft_get_cmd(t_args *args, t_token *token);
+t_cmd		*ft_cmd(t_token *token, t_cmd *cmd, int *nb_cmd);
+int			ft_get_cmd(t_cmd *cmd, t_token *token);
 void		ft_free_all(t_args *args);
 
 int			ft_exit(t_args *args, t_token *token);
@@ -81,5 +88,6 @@ int			ft_is_operator(char c);
 int			ft_handle_operator(t_token **token, char *line, int *i);
 int			ft_handle_word(t_token **token, char *line, int *start);
 
+void		ft_exec_pipe(t_cmd *cmd, int fd[2], int nb_cmd);
 
 #endif
