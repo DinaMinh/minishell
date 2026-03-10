@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 15:10:36 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/09 16:38:00 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/10 16:45:24 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ void	ft_exec_infile(char *path, char **cmd, int fd[2])
 	{
 		if (cmd[1])
 		{
-			printf("%s\n", cmd[1]);
 			infile = open(infile_name, O_RDONLY);
 			dup2(infile, STDIN_FILENO);
 			dup2(fd[PIPE_WRITE], STDOUT_FILENO);
@@ -50,8 +49,8 @@ void	ft_exec_infile(char *path, char **cmd, int fd[2])
 			bytes = 1;
 			while (bytes > 0)
 			{
-				bytes = read(fd[PIPE_READ], buf, 1);
-				write(2, &buf[0], 1);
+				bytes = read(fd[PIPE_READ], buf, sizeof(buf));
+				write(2, buf, bytes);
 			}
 			close(fd[PIPE_READ]);
 		}
@@ -97,12 +96,21 @@ int	main(void)
 			{
 				if (ft_get_cmd(args.cmd, token))
 					printf("minishell: %s: command not found\n", args.input);
-				if (token->type == TOKEN_REDIR_IN)
-					ft_exec_infile(args.cmd->cmd_path, args.cmd->cmd, args.fd);
-				else if (args.cmd->next)
-					ft_exec_pipe(args.cmd, args.fd, args.nb_cmd);
-				else
-					ft_exec_cmd(args.cmd->cmd_path, args.cmd->cmd);
+//				t_cmd	*tmp;
+//				tmp = args.cmd;
+//				while (tmp)
+//				{
+//					for (i = 0; tmp->cmd[i]; i++)
+//						printf("%s\n", tmp->cmd[i]);
+//					printf("%s\n", tmp->cmd_path);
+//					tmp = tmp->next;
+//				}
+				//if (token->type == TOKEN_REDIR_IN)
+				//	ft_exec_infile(args.cmd->cmd_path, args.cmd->cmd, args.fd);
+				//else// if (args.cmd->next)
+					ft_exec_pipe(token, args.cmd, args.fd, args.nb_cmd);
+				//else
+				//	ft_exec_cmd(args.cmd->cmd_path, args.cmd->cmd);
 			}
 		}
 		ft_free_all(&args);

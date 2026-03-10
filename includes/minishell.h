@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 16:11:03 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/09 14:27:30 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/10 13:59:04 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,8 @@ void		ft_free_all(t_args *args);
 
 int			ft_exit(t_args *args, t_token *token);
 
-t_token		*ft_token_new(char *str, t_token_type type);
 t_token		*ft_lexer(char *line);
+t_token		*ft_token_new(char *str, t_token_type type);
 int			ft_token_addback(t_token **head, char *str, t_token_type type);
 void		ft_token_clear(t_token **head);
 
@@ -88,6 +88,6 @@ int			ft_is_operator(char c);
 int			ft_handle_operator(t_token **token, char *line, int *i);
 int			ft_handle_word(t_token **token, char *line, int *start);
 
-void		ft_exec_pipe(t_cmd *cmd, int fd[2], int nb_cmd);
+void		ft_exec_pipe(t_token *token, t_cmd *cmd, int fd[2], int nb_cmd);
 
 #endif

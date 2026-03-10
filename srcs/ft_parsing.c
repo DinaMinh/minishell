@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 11:45:38 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/09 11:43:12 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/10 17:44:26 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	ft_get_cmd(t_cmd *cmd, t_token *token)
 	int	cmd_index;
 
 	cmd_index = 0;
-	if (token && token->type != TOKEN_WORD && cmd->cmd[1])
+	if (token && token->type != TOKEN_WORD && token->type != TOKEN_PIPE && cmd->cmd[1])
 		cmd_index = 1;
 	cmd_len = ft_strlen(cmd->cmd[cmd_index]) + PATH_LEN;
 	cmd->cmd_path = ft_calloc(cmd_len + 1, sizeof(*cmd->cmd_path));
@@ -40,6 +40,9 @@ int	ft_get_cmd(t_cmd *cmd, t_token *token)
 		return (1);
 	if (cmd->next)
 	{
+		token = token->next;
+		while (token && token->type == TOKEN_WORD)
+			token = token->next;
 		if (ft_get_cmd(cmd->next, token))
 			return (0);
 	}
