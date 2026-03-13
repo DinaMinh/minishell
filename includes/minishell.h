@@ -28,6 +28,7 @@
 # define PATH_LEN 10
 # define EXIT "exit"
 # define EXIT_LEN 4
+
 # define INFILE 1
 # define CMD_NOT_FOUND "command not found"
 # define D_QUOTE 34
@@ -38,6 +39,24 @@
 # define PIPE_READ 0
 # define PIPE_WRITE 1
 
+/* BUILT_IN */
+# define BUILT_IN_CMD "echo cd pwd export unset env exit"
+# define BUILT_IN_LEN 33
+# define ECHO "echo"
+# define ECHO_LEN 4
+# define CD "cd"
+# define CD_LEN 2
+# define PWD "pwd"
+# define PWD_LEN 3
+# define EXPORT "export"
+# define EXPORT_LEN 6
+# define UNSET "unset"
+# define UNSET_LEN 5
+# define ENV "env"
+# define ENV_LEN 3
+# define EXIT "exit"
+# define EXIT_LEN 4
+
 typedef enum  e_token_type
 {
 	TOKEN_WORD,
@@ -47,6 +66,13 @@ typedef enum  e_token_type
 	TOKEN_APPEND,
 	TOKEN_HEREDOC
 }	t_token_type;
+
+typedef struct s_env
+{
+	char			*key;
+	char			*value;
+	struct s_env	*next;
+}	t_env;	
 
 typedef struct s_token
 {
@@ -59,21 +85,24 @@ typedef struct s_cmd
 {
 	char			**cmd;
 	char			*cmd_path;
+	bool			built_in;
 	struct s_cmd	*next;
 }	t_cmd;
 
 typedef struct s_args
 {
+	char			**envp;
 	int				fd[2];
 	char			*input;
 	int				nb_cmd;
-	int				redirect;
 	int				return_value;
 	t_cmd			*cmd;
+	t_env			*env;
 }	t_args;
 
 t_cmd		*ft_cmd(t_token *token, t_cmd *cmd, int *nb_cmd);
-int			ft_get_cmd(t_cmd *cmd, t_token *token);
+int			ft_get_path(t_cmd *cmd, t_token *token);
+int			ft_check_built_in(t_args *args, t_token *token);
 void		ft_free_all(t_args *args);
 
 int			ft_exit(t_args *args, t_token *token);
@@ -88,6 +117,21 @@ int			ft_is_operator(char c);
 int			ft_handle_operator(t_token **token, char *line, int *i);
 int			ft_handle_word(t_token **token, char *line, int *start);
 
-void		ft_exec_pipe(t_token *token, t_cmd *cmd, int fd[2], int nb_cmd);
+void		ft_infile_child(t_cmd *cmd, int fd[2], int *reading);
+void		ft_infile_parent(t_cmd *cmd, int fd[2], int *reading);
+void		ft_outfile_child(t_cmd *cmd, int fd[2], int *reading);
+void		ft_outfile_parent(t_cmd *cmd, int fd[2], int *reading);
+void		ft_exec_pipe(t_token *token, t_args *args);
+
+t_env		*init_env(char **envp);
+void		env_add_back(t_env **env_list, t_env *new_node);
+void		free_env_node(t_env *node);
+t_env		*create_env_node(char *env_str);
+int 		builtin_env(t_env *env_list, int fd_out);
+int			builtin_export(t_args *cmd_node, t_env **env_list);
+int			builtin_pwd(int fd_out);
+int			builtin_unset(t_args *cmd_node, t_env **env_list);
+int			is_valid_env_name(char *str);
+
 
 #endif

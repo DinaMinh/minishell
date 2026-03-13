@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 16:37:16 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/10 17:32:13 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/13 17:59:38 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,46 +39,52 @@ static void	ft_pipe_parent(t_cmd *cmd, int fd[2], int *reading)
 	}
 }
 
-static void	ft_infile_child(t_cmd *cmd, int fd[2], int *reading)
+void	ft_exec_built_in(t_args *args, int *reading)
 {
-	char	*infile_name;
-	int		infile;
-
-	infile_name = cmd->cmd[0];
 	(void)reading;
-	if (cmd->cmd[1])
+	if (!cmd->next)
 	{
-		infile = open(infile_name, O_RDONLY);
-		if (cmd->next)
-		{
-			dup2(infile, STDIN_FILENO);
-			dup2(fd[PIPE_WRITE], STDOUT_FILENO);
-			close(fd[PIPE_WRITE]);
-			close(fd[PIPE_READ]);
-			close(infile);
-		}
-		else
-		{
-			dup2(infile, STDIN_FILENO);
-			close(infile);
-		}
-		printf("%s\n", cmd->cmd_path);
-		execve(cmd->cmd_path, &cmd->cmd[1], NULL);
+		if (ft_strncmp(args->cmd->cmd[0], ECHO, ECHO_LEN) == 0)
+			return ;
+		else if (ft_strncmp(args->cmd->cmd[0], CD, CD_LEN) == 0)
+			return ;
+		else if (ft_strncmp(args->cmd->cmd[0], PWD, PWD_LEN) == 0)
+			builtin_pwd(STDOUT_FILENO);
+		else if (ft_strncmp(args->cmd->cmd[0], EXPORT, EXPORT_LEN) == 0)
+			builtin_export(args, &args->env);
+		else if (ft_strncmp(args->cmd->cmd[0], UNSET, UNSET_LEN) == 0)
+			builtin_unset(args, &args->env);
+		else if (ft_strncmp(args->cmd->cmd[0], ENV, ENV_LEN) == 0)
+			builtin_env(args->env, STDOUT_FILENO);
+		else if (ft_strncmp(args->cmd->cmd[0], EXIT, EXIT_LEN) == 0)
+			return ;
 	}
+	else
 }
 
-static void	ft_infile_parent(t_cmd *cmd, int fd[2], int *reading)
+void	ft_exec_child(t_token *token, t_args *args, int *reading)
 {
-	if (cmd->next)
-	{
-		close(fd[PIPE_WRITE]);
-		if (*reading != 0)
-			close(*reading);
-		*reading = fd[PIPE_READ];
-	}
+	if (token->type == TOKEN_REDIR_IN)
+		ft_infile_child(args->cmd, args->fd, reading);
+	else if (token->type == TOKEN_REDIR_OUT)
+		ft_outfile_child(args->cmd, args->fd, reading);
+	else if (args->cmd->built_in)
+		ft_exec_built_in(args, reading);
+	else
+		ft_pipe_child(args->cmd, args->fd, reading);
 }
 
-void	ft_exec_pipe(t_token *token, t_cmd *cmd, int fd[2], int nb_cmd)
+void	ft_exec_parent(t_token *token, t_args *args, int *reading)
+{
+	if (token->type == TOKEN_REDIR_IN)
+		ft_infile_parent(args->cmd, args->fd, reading);
+	else if (token->type == TOKEN_REDIR_OUT)
+		ft_outfile_parent(args->cmd, args->fd, reading);
+	else
+		ft_pipe_parent(args->cmd, args->fd, reading);
+}
+
+void	ft_exec_pipe(t_token *token, t_args *args)
 {
 	int		pid;
 	int		reading;
@@ -88,32 +94,21 @@ void	ft_exec_pipe(t_token *token, t_cmd *cmd, int fd[2], int nb_cmd)
 	i = -1;
 	j = -1;
 	reading = 0;
-	(void)token;
-	while (++i < nb_cmd)
+	while (++i < args->nb_cmd)
 	{
-		if (cmd->next)
-			pipe(fd);
+		if (args->cmd->next)
+			pipe(args->fd);
 		pid = fork();
 		if (pid == CHILD)
-		{
-			if (token->type == TOKEN_REDIR_IN)
-				ft_infile_child(cmd, fd, &reading);
-			else
-				ft_pipe_child(cmd, fd, &reading);
-		}
+			ft_exec_child(token, args, &reading);
 		else
-		{
-			if (token->type == TOKEN_REDIR_IN)
-				ft_infile_parent(cmd, fd, &reading);
-			else
-				ft_pipe_parent(cmd, fd, &reading);
-		}
-		if (cmd->next)
-			cmd = cmd->next;
+			ft_exec_parent(token, args, &reading);
+		if (args->cmd->next)
+			args->cmd = args->cmd->next;
 		token = token->next;
 		while (token && token->type == TOKEN_WORD)
 			token = token->next;
 	}
-	while (++j < nb_cmd)
+	while (++j < args->nb_cmd)
 		wait(NULL);
 }

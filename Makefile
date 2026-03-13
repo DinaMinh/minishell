@@ -1,18 +1,27 @@
 NAME := minishell
 
 SRC := main.c ft_parsing.c ft_lexer.c ft_lexer_utils.c ft_token_utils.c \
-	ft_exit.c ft_cmd.c ft_pipe.c
+	ft_exit.c ft_cmd.c ft_pipe.c ft_infile.c ft_outfile.c \
+
+
+SRC_BUILT_IN := env_utils.c ft_env.c  ft_export.c  ft_pwd.c  ft_unset.c
 
 SRC_DIR := ./srcs/
+BUILT_IN_DIR := ./srcs/built_in/
 OBJ_DIR := ./objects/
 BIN_DIR := ./bin/
 
 ALL_SRCS := $(addprefix $(SRC_DIR), $(SRC))
+ALL_BUILT_IN := $(addprefix $(BUILT_IN_DIR), $(SRC_BUILT_IN))
+
 
 LIBFT := libft/libft.a
 LIBFT_DIR := libft/
 
-OBJ := $(addprefix $(OBJ_DIR), $(SRC:.c=.o))
+OBJ = $(addprefix $(OBJ_DIR), $(SRC:.c=.o))
+OBJ += $(addprefix $(OBJ_DIR), $(SRC_BUILT_IN:.c=.o))
+
+vpath %.c $(SRC_DIR):$(BUILT_IN_DIR)
 
 INCLUDES := includes/
 
@@ -32,7 +41,7 @@ CREATE_BIN_DIR := mkdir -p $(BIN_DIR)
 
 all: $(LIBFT) $(BIN_DIR)$(NAME)
 
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c | $(OBJ_DIR)
+$(OBJ_DIR)%.o: %.c | $(OBJ_DIR)
 	@echo "[COMPILING] $@"
 	@$(CC) $(CFLAGS) -c $< -o $@
 
@@ -56,7 +65,7 @@ $(BIN_DIR)$(NAME): $(OBJ) | $(BIN_DIR)
 
 debug: $(LIBFT) | $(BIN_DIR)
 	@echo "[COMPILING DEBUG] $^"
-	@$(CC) $(CFLAGS) $(DEBUG_FLAGS) -I$(INCLUDES) -o $(BIN_DIR)$(NAME) $(ALL_SRCS) -Llibft -lft
+	@$(CC) $(CFLAGS) $(DEBUG_FLAGS) -I$(INCLUDES) -o $(BIN_DIR)$(NAME) $(ALL_SRCS) $(ALL_BUILT_IN) -Llibft -lft
 
 clean:
 	@printf "[DELETING] Object files\n"

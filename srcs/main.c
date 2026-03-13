@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 15:10:36 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/10 16:45:24 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/13 16:52:49 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,104 +15,40 @@
 void	ft_exec_outfile();
 void	ft_cmd_parsing();
 
-void	ft_child_infile(char *path, char **cmd, int fd2, int infile);
-
-void	ft_exec_infile(char *path, char **cmd, int fd[2])
+int	ft_minishell(t_token *token, t_args args, char **envp)
 {
-	char	*infile_name;
-	char	buf[100];
-	int		pid;
-	int		infile;
-	int		bytes;
-
-	infile_name = cmd[0];
-	pipe(fd);
-	pid = fork();
-	if (pid == CHILD)
+	(void)envp;
+	args.input = readline(PROMPT);
+	add_history(args.input);
+	token = ft_lexer(args.input);
+	args.cmd = ft_cmd(token, args.cmd, &args.nb_cmd);
+	if (args.input)
 	{
-		if (cmd[1])
+		if (!ft_exit(&args, token))
 		{
-			infile = open(infile_name, O_RDONLY);
-			dup2(infile, STDIN_FILENO);
-			dup2(fd[PIPE_WRITE], STDOUT_FILENO);
-			close(fd[PIPE_WRITE]);
-			close(fd[PIPE_READ]);
-			close(infile);
-			execve(path, &cmd[1], NULL);
+			ft_check_built_in(&args, token);
+			if (ft_get_path(args.cmd, token))
+				printf("minishell: %s: command not found\n", args.input);
+			ft_exec_pipe(token, &args);
 		}
 	}
-	else
-	{
-		if (cmd[1])
-		{
-			close(fd[PIPE_WRITE]);
-			bytes = 1;
-			while (bytes > 0)
-			{
-				bytes = read(fd[PIPE_READ], buf, sizeof(buf));
-				write(2, buf, bytes);
-			}
-			close(fd[PIPE_READ]);
-		}
-		waitpid(pid, NULL, 0);
-	}
+	return (0);
 }
 
-void	ft_exec_cmd(char *path, char **cmd)
-{
-	int	pid;
-
-	pid = fork();
-	if (pid == CHILD)
-		execve(path, cmd, NULL);
-	else
-		waitpid(pid, NULL, 0);
-}
-
-int	main(void)
+int	main(int ac, char **av, char **envp)
 {
 	t_token	*token;
-	//t_token *tmp;
 	t_args	args;
 
 	ft_memset(&args, 0, sizeof(args));
+	args.envp = envp;
+	token = NULL;
+	args.env = init_env(envp);
+	if (ac != 1 || av[1])
+		return (EXIT_FAILURE);
 	while (true)
 	{
-		args.input = readline(PROMPT);
-		add_history(args.input);
-		token = ft_lexer(args.input);
-		//tmp = token;
-		args.cmd = ft_cmd(token, args.cmd, &args.nb_cmd);
-		//		while (tmp)
-		//		{
-		//			printf("content = %s, type = %d\n", tmp->content, tmp->type);
-		//			tmp = tmp->next;
-		//		}
-		//		for(int i = 0; args.cmd[i]; i++)
-		//			printf("cmd[i] = %s\n", args.cmd[i]);
-		if (args.input)
-		{
-			if (!ft_exit(&args, token))
-			{
-				if (ft_get_cmd(args.cmd, token))
-					printf("minishell: %s: command not found\n", args.input);
-//				t_cmd	*tmp;
-//				tmp = args.cmd;
-//				while (tmp)
-//				{
-//					for (i = 0; tmp->cmd[i]; i++)
-//						printf("%s\n", tmp->cmd[i]);
-//					printf("%s\n", tmp->cmd_path);
-//					tmp = tmp->next;
-//				}
-				//if (token->type == TOKEN_REDIR_IN)
-				//	ft_exec_infile(args.cmd->cmd_path, args.cmd->cmd, args.fd);
-				//else// if (args.cmd->next)
-					ft_exec_pipe(token, args.cmd, args.fd, args.nb_cmd);
-				//else
-				//	ft_exec_cmd(args.cmd->cmd_path, args.cmd->cmd);
-			}
-		}
+		ft_minishell(token, args, envp);
 		ft_free_all(&args);
 		ft_token_clear(&token);
 	}
