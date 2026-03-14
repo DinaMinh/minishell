@@ -45,10 +45,8 @@ int	ft_handle_operator(t_token **token, char *line, int *i)
 	{
 		if (line[*i] == '|')
 			err = ft_token_addback(token, ft_strdup("|"), TOKEN_PIPE);
-		else if (line[*i] == '<')
-			err = ft_token_addback(token, ft_strdup("<"), TOKEN_REDIR_IN);
-		else if (line[*i] == '>')
-			err =ft_token_addback(token, ft_strdup(">"), TOKEN_REDIR_OUT);
+		else if (line[*i] == '<' || line[*i] == '>')
+			err = ft_handle_redir(token, line, i);
 		(*i)++;
 	}
 	return (err);

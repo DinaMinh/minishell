@@ -2,6 +2,7 @@ NAME := minishell
 
 SRC := main.c ft_parsing.c ft_lexer.c ft_lexer_utils.c ft_token_utils.c \
 	ft_exit.c ft_cmd.c ft_pipe.c ft_infile.c ft_outfile.c \
+	ft_lexer_redir.c ft_exec_built_in.c
 
 
 SRC_BUILT_IN := env_utils.c ft_env.c  ft_export.c  ft_pwd.c  ft_unset.c

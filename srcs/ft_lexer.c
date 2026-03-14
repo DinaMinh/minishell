@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:37:03 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/09 11:41:39 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/14 12:53:30 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ t_token	*ft_lexer(char *line)
 //{
 //	t_token	*node;
 //	t_token *tmp;
-//	char	**cmd;
 //	char	*input;
 //
 //	while (true)
@@ -53,14 +52,11 @@ t_token	*ft_lexer(char *line)
 //		input = readline(PROMPT);
 //		node = ft_lexer(input);
 //		tmp = node;
-//		cmd = ft_cmd(node);
 //		while (tmp)
 //		{
 //			printf("content = %s, type = %d\n", tmp->content, tmp->type);
 //			tmp = tmp->next;
 //		}
-//		for(int i = 0; cmd[i]; i++)
-//			printf("cmd[i] = %s\n", cmd[i]);
 //		ft_token_clear(&node);
 //	}
 //	return (EXIT_SUCCESS);

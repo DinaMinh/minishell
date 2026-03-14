@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 16:11:03 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/10 13:59:04 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/14 17:41:56 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@
 typedef enum  e_token_type
 {
 	TOKEN_WORD,
+	TOKEN_FILENAME,
 	TOKEN_PIPE,
 	TOKEN_REDIR_IN,
 	TOKEN_REDIR_OUT,
@@ -84,8 +85,13 @@ typedef struct s_token
 typedef struct s_cmd
 {
 	char			**cmd;
-	char			*cmd_path;
+	char			*path;
+	char			*infile;
+	char			*outfile;
+	int				in_fd;
+	int				out_fd;
 	bool			built_in;
+	bool			append;
 	struct s_cmd	*next;
 }	t_cmd;
 
@@ -102,7 +108,7 @@ typedef struct s_args
 
 t_cmd		*ft_cmd(t_token *token, t_cmd *cmd, int *nb_cmd);
 int			ft_get_path(t_cmd *cmd, t_token *token);
-int			ft_check_built_in(t_args *args, t_token *token);
+int			ft_check_built_in(t_args *args);
 void		ft_free_all(t_args *args);
 
 int			ft_exit(t_args *args, t_token *token);
@@ -116,12 +122,12 @@ int			ft_is_blank(char c);
 int			ft_is_operator(char c);
 int			ft_handle_operator(t_token **token, char *line, int *i);
 int			ft_handle_word(t_token **token, char *line, int *start);
+int			ft_handle_redir(t_token **token, char *line, int *i);
 
-void		ft_infile_child(t_cmd *cmd, int fd[2], int *reading);
-void		ft_infile_parent(t_cmd *cmd, int fd[2], int *reading);
-void		ft_outfile_child(t_cmd *cmd, int fd[2], int *reading);
-void		ft_outfile_parent(t_cmd *cmd, int fd[2], int *reading);
+void		ft_close_fds(t_cmd *cmd, int fd[2], int *reading);
 void		ft_exec_pipe(t_token *token, t_args *args);
+void		ft_exec_built_in(t_args *args, int *reading);
+void		ft_built_in_only(t_args *args);
 
 t_env		*init_env(char **envp);
 void		env_add_back(t_env **env_list, t_env *new_node);
