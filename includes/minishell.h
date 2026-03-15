@@ -125,8 +125,8 @@ int			ft_handle_word(t_token **token, char *line, int *start);
 int			ft_handle_redir(t_token **token, char *line, int *i);
 
 void		ft_close_fds(t_cmd *cmd, int fd[2], int *reading);
-void		ft_exec_pipe(t_token *token, t_args *args);
-void		ft_exec_built_in(t_args *args, int *reading);
+void		ft_exec(t_args *args);
+void		ft_exec_built_in(t_args *args, t_cmd *cmd, int *reading);
 void		ft_built_in_only(t_args *args);
 
 t_env		*init_env(char **envp);

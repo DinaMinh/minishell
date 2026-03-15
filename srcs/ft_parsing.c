@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 11:45:38 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/14 15:35:07 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/15 17:00:58 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ int	ft_check_path(t_cmd *cmd)
 	ft_strlcpy(cmd->path, PATH, PATH_LEN);
 	cmd->path = ft_strncat(cmd->path, cmd->cmd[cmd_index],
 			cmd_len);
-	if (access(cmd->path, F_OK) == -1)
-		return (1);
 	return (0);
 }
 

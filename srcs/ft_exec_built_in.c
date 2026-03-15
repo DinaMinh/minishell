@@ -6,27 +6,29 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 17:39:26 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/14 17:39:50 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/15 17:40:19 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	ft_built_in_cmds(t_args *args)
+static void	ft_built_in_cmds(t_args *args, t_cmd *cmd)
 {
-	if (ft_strncmp(args->cmd->cmd[0], ECHO, ECHO_LEN) == 0)
+	if (!cmd)
+		cmd = args->cmd;
+	if (ft_strncmp(cmd->cmd[0], ECHO, ECHO_LEN) == 0)
 		return ;
-	else if (ft_strncmp(args->cmd->cmd[0], CD, CD_LEN) == 0)
+	else if (ft_strncmp(cmd->cmd[0], CD, CD_LEN) == 0)
 		return ;
-	else if (ft_strncmp(args->cmd->cmd[0], PWD, PWD_LEN) == 0)
+	else if (ft_strncmp(cmd->cmd[0], PWD, PWD_LEN) == 0)
 		builtin_pwd(STDOUT_FILENO);
-	else if (ft_strncmp(args->cmd->cmd[0], EXPORT, EXPORT_LEN) == 0)
+	else if (ft_strncmp(cmd->cmd[0], EXPORT, EXPORT_LEN) == 0)
 		builtin_export(args, &args->env);
-	else if (ft_strncmp(args->cmd->cmd[0], UNSET, UNSET_LEN) == 0)
+	else if (ft_strncmp(cmd->cmd[0], UNSET, UNSET_LEN) == 0)
 		builtin_unset(args, &args->env);
-	else if (ft_strncmp(args->cmd->cmd[0], ENV, ENV_LEN) == 0)
+	else if (ft_strncmp(cmd->cmd[0], ENV, ENV_LEN) == 0)
 		builtin_env(args->env, STDOUT_FILENO);
-	else if (ft_strncmp(args->cmd->cmd[0], EXIT, EXIT_LEN) == 0)
+	else if (ft_strncmp(cmd->cmd[0], EXIT, EXIT_LEN) == 0)
 		return ;
 }
 
@@ -48,7 +50,7 @@ void	ft_built_in_only(t_args *args)
 			| O_TRUNC, S_IRWXU);
 		dup2(args->cmd->out_fd, STDOUT_FILENO);
 	}
-	ft_built_in_cmds(args);
+	ft_built_in_cmds(args, NULL);
 	if (args->cmd->infile)
 		close(args->cmd->in_fd);
 	if (args->cmd->outfile)
@@ -59,24 +61,24 @@ void	ft_built_in_only(t_args *args)
 	close(output);
 }
 
-void	ft_exec_built_in(t_args *args, int *reading)
+void	ft_exec_built_in(t_args *args, t_cmd *cmd, int *reading)
 {
 	if (*reading)
 		dup2(*reading, STDIN_FILENO);
 	if (args->cmd->infile)
 	{
-		args->cmd->in_fd = open(args->cmd->infile, O_RDONLY);
-		dup2(args->cmd->in_fd, STDIN_FILENO);
+		cmd->in_fd = open(cmd->infile, O_RDONLY);
+		dup2(cmd->in_fd, STDIN_FILENO);
 	}
-	if (args->cmd->next)
+	if (cmd->next)
 		dup2(args->fd[PIPE_WRITE], STDOUT_FILENO);
-	if (args->cmd->outfile)
+	if (cmd->outfile)
 	{
-		args->cmd->out_fd = open(args->cmd->outfile, O_CREAT | O_WRONLY
+		cmd->out_fd = open(cmd->outfile, O_CREAT | O_WRONLY
 			| O_TRUNC, S_IRWXU);
-		dup2(args->cmd->out_fd, STDOUT_FILENO);
+		dup2(cmd->out_fd, STDOUT_FILENO);
 	}
-	ft_built_in_cmds(args);
-	ft_close_fds(args->cmd, args->fd, reading);
+	ft_built_in_cmds(args, cmd);
+	ft_close_fds(cmd, args->fd, reading);
 	exit(EXIT_SUCCESS);
 }

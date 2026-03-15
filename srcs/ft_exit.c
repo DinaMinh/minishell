@@ -21,8 +21,10 @@ void	ft_cmd_clear(t_cmd **head)
 	{
 		tmp = (*head)->next;
 		i = 0;
+		printf("OK\n");
 		while ((*head)->cmd[i])
 		{
+			printf("%s\n", (*head)->cmd[i]);
 			free((*head)->cmd[i]);
 			i++;
 		}

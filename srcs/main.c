@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 15:10:36 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/14 16:56:38 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/15 17:49:33 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,11 @@ int	ft_minishell(t_token *token, t_args args)
 			ft_check_built_in(&args);
 			if (ft_get_path(args.cmd, token))
 				printf("minishell: %s: command not found\n", args.input);
-			ft_exec_pipe(token, &args);
+			ft_exec(&args);
 		}
 	}
+	ft_free_all(&args);
+	ft_token_clear(&token);
 	return (0);
 }
 
@@ -45,10 +47,6 @@ int	main(int ac, char **av, char **envp)
 	if (ac != 1 || av[1])
 		return (EXIT_FAILURE);
 	while (true)
-	{
 		ft_minishell(token, args);
-		ft_free_all(&args);
-		ft_token_clear(&token);
-	}
 	return (EXIT_SUCCESS);
 }
