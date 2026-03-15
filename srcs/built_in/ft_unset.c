@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_unset.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/16 00:28:55 by dminh             #+#    #+#             */
+/*   Updated: 2026/03/16 00:29:16 by dminh            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	remove_env_node(t_env **env_list, char *key)
@@ -39,7 +51,6 @@ int	builtin_unset(t_args *cmd_node, t_env **env_list)
 	i = 1;
 	if (args[1] == NULL)
 		return (0);
-
 	while (args[i] != NULL)
 	{
 		if (!is_valid_env_name(args[i]) || ft_strchr(args[i], '='))

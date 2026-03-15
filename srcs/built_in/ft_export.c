@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_export.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/16 00:28:20 by dminh             #+#    #+#             */
+/*   Updated: 2026/03/16 00:40:27 by dminh            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	is_valid_env_name(char *str)
@@ -27,6 +39,7 @@ t_env	*find_env_node(t_env *env_list, char *key)
 	return (NULL);
 }
 // A VOIR ORDRE ALPHABETIQUE
+
 int	print_export_list(t_env *env_list, int fd_out)
 {
 	t_env	*current;
@@ -89,16 +102,7 @@ int	builtin_export(t_args *cmd_node, t_env **env_list)
 				free(new_node);
 			}
 			else
-			{
 				env_add_back(env_list, new_node);
-//				t_env	*tmp;
-//				tmp = *env_list;
-//				while (tmp)
-//				{
-//					printf("%s\n", tmp->key);
-//					tmp = tmp->next;
-//				}
-			}
 		}
 		i++;
 	}

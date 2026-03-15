@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 18:09:13 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/14 11:49:54 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/16 00:42:18 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,8 @@ void	ft_cmd_clear(t_cmd **head)
 	{
 		tmp = (*head)->next;
 		i = 0;
-		printf("OK\n");
 		while ((*head)->cmd[i])
 		{
-			printf("%s\n", (*head)->cmd[i]);
 			free((*head)->cmd[i]);
 			i++;
 		}

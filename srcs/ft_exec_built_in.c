@@ -47,7 +47,7 @@ void	ft_built_in_only(t_args *args)
 	if (args->cmd->outfile)
 	{
 		args->cmd->out_fd = open(args->cmd->outfile, O_CREAT | O_WRONLY
-			| O_TRUNC, S_IRWXU);
+				| O_TRUNC, S_IRWXU);
 		dup2(args->cmd->out_fd, STDOUT_FILENO);
 	}
 	ft_built_in_cmds(args, NULL);
@@ -75,7 +75,7 @@ void	ft_exec_built_in(t_args *args, t_cmd *cmd, int *reading)
 	if (cmd->outfile)
 	{
 		cmd->out_fd = open(cmd->outfile, O_CREAT | O_WRONLY
-			| O_TRUNC, S_IRWXU);
+				| O_TRUNC, S_IRWXU);
 		dup2(cmd->out_fd, STDOUT_FILENO);
 	}
 	ft_built_in_cmds(args, cmd);

@@ -6,12 +6,11 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:37:03 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/14 12:53:30 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/16 00:24:34 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 t_token	*ft_lexer(char *line)
 {
@@ -40,7 +39,6 @@ t_token	*ft_lexer(char *line)
 	}
 	return (token_list);
 }
-
 //int	main(void)
 //{
 //	t_token	*node;

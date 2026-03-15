@@ -68,12 +68,12 @@ int	ft_add_word(t_token **token, int len, char *line, char quote)
 int	ft_handle_word(t_token **token, char *line, int *start)
 {
 	char	quote;
-	int	end;
+	int		end;
 
 	end = *start;
 	quote = 0;
 	while (line[end] && ft_is_operator(line[end]) == false
-			&& ft_is_blank(line[end]) == false)
+		&& ft_is_blank(line[end]) == false)
 	{
 		if (line[end] == D_QUOTE || line[end] == S_QUOTE)
 		{

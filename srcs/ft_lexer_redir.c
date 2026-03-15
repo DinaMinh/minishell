@@ -6,12 +6,11 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 12:38:06 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/14 12:38:06 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/16 00:24:51 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 int	ft_add_filename(t_token **token, int len, char *line, char quote)
 {
@@ -29,12 +28,12 @@ int	ft_add_filename(t_token **token, int len, char *line, char quote)
 int	ft_handle_filename(t_token **token, char *line, int *start)
 {
 	char	quote;
-	int	end;
+	int		end;
 
 	end = *start;
 	quote = 0;
 	while (line[end] && ft_is_operator(line[end]) == false
-			&& ft_is_blank(line[end]) == false)
+		&& ft_is_blank(line[end]) == false)
 	{
 		if (line[end] == D_QUOTE || line[end] == S_QUOTE)
 		{

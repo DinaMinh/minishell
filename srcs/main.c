@@ -6,14 +6,11 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 15:10:36 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/15 17:49:33 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/16 00:14:23 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-/*To be implemented functions prototypes*/
-void	ft_exec_outfile();
-void	ft_cmd_parsing();
 
 int	ft_minishell(t_token *token, t_args args)
 {

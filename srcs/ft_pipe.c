@@ -57,7 +57,7 @@ void	ft_exec_child(t_args *args, t_cmd *cmd, int *reading)
 void	ft_exec_loop(t_args *args, int *reading)
 {
 	t_cmd	*cmd;
-	int	pid;
+	int		pid;
 	int		i;
 
 	i = 0;

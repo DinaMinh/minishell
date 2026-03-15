@@ -17,7 +17,7 @@ int	ft_check_built_in(t_args *args)
 	t_cmd	*tmp;
 
 	tmp = args->cmd;
-	while (tmp && tmp->cmd )
+	while (tmp && tmp->cmd)
 	{
 		if (tmp->cmd[0] && ft_strnstr(BUILT_IN_CMD, tmp->cmd[0], BUILT_IN_LEN))
 			tmp->built_in = true;

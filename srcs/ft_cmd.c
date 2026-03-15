@@ -57,7 +57,8 @@ t_cmd	*ft_get_cmd_size(t_token *token)
 	{
 		if (token->type == TOKEN_WORD)
 			size++;
-		else if (token->type == TOKEN_REDIR_IN || token->type == TOKEN_REDIR_OUT)
+		else if (token->type == TOKEN_REDIR_IN
+			|| token->type == TOKEN_REDIR_OUT)
 			file_type = token->type;
 		else if (token->type == TOKEN_FILENAME)
 			ft_filename(token, &infile, &outfile, file_type);
