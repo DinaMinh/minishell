@@ -6,19 +6,21 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 16:37:16 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/15 17:14:00 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/16 14:51:47 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	ft_child(t_cmd *cmd, int fd[2], int *reading)
+static void	ft_child(t_cmd *cmd, int fd[2], int *reading, char **envp)
 {
 	if (*reading != 0)
 		dup2(*reading, STDIN_FILENO);
 	if (cmd->infile)
 	{
 		cmd->in_fd = open(cmd->infile, O_RDONLY);
+		if (cmd->in_fd < 0)
+			exit(1);
 		dup2(cmd->in_fd, STDIN_FILENO);
 	}
 	if (cmd->next)
@@ -26,12 +28,13 @@ static void	ft_child(t_cmd *cmd, int fd[2], int *reading)
 	if (cmd->outfile)
 	{
 		cmd->out_fd = open(cmd->outfile, O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU);
+		if (cmd->out_fd < 0)
+			exit(1);
 		dup2(cmd->out_fd, STDOUT_FILENO);
 	}
 	ft_close_fds(cmd, fd, reading);
-	if (cmd->cmd[0])
-		execve(cmd->path, cmd->cmd, NULL);
-	printf("minishell: %s: command not found\n", cmd->cmd[0]);
+	execve(cmd->path, cmd->cmd, envp);
+	ft_print_error_cmd(cmd->cmd[0]);
 	exit(127);
 }
 
@@ -51,7 +54,7 @@ void	ft_exec_child(t_args *args, t_cmd *cmd, int *reading)
 	if (cmd->built_in)
 		ft_exec_built_in(args, cmd, reading);
 	else
-		ft_child(cmd, args->fd, reading);
+		ft_child(cmd, args->fd, reading, args->envp);
 }
 
 void	ft_exec_loop(t_args *args, int *reading)
@@ -97,6 +100,7 @@ void	ft_exec(t_args *args)
 	while (i < args->nb_cmd)
 	{
 		wait(&status);
+		args->return_val = WEXITSTATUS(status);
 		i++;
 	}
 }

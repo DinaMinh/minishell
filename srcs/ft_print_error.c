@@ -1,36 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strrchr.c                                       :+:      :+:    :+:   */
+/*   ft_print_error.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/18 16:15:42 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/16 12:47:32 by dminh            ###   ########.fr       */
+/*   Created: 2026/03/16 11:17:27 by dminh             #+#    #+#             */
+/*   Updated: 2026/03/16 11:19:51 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-char	*ft_strrchr(const char *str, int c)
+void	ft_print_error_cmd(char *cmd)
 {
-	int		i;
-	char	*last;
-
-	i = 0;
-	last = (char *)str;
-	while (*str)
-	{
-		if (*str++ == (unsigned char)c)
-		{
-			last = (char *)(str - 1);
-			i = 1;
-		}
-	}
-	if (i == 1)
-		return (last);
-	if ((unsigned char)c == '\0')
-		return ((char *)str);
-	else
-		return (NULL);
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(cmd, STDERR_FILENO);
+	ft_putstr_fd(": command not found\n", STDERR_FILENO);
 }

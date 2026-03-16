@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 16:11:03 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/14 17:41:56 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/16 15:45:18 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ typedef struct s_args
 	int				fd[2];
 	char			*input;
 	int				nb_cmd;
-	int				return_value;
+	int				return_val;
 	t_cmd			*cmd;
 	t_env			*env;
 }	t_args;
@@ -113,15 +113,15 @@ void		ft_free_all(t_args *args);
 
 int			ft_exit(t_args *args, t_token *token);
 
-t_token		*ft_lexer(char *line);
+t_token		*ft_lexer(t_args *args);
 t_token		*ft_token_new(char *str, t_token_type type);
+int			ft_handle_quotes(char *line, int *end, int *start, char *quote);
+int			ft_add_word(t_token **token, int len, char *line, char quote);
 int			ft_token_addback(t_token **head, char *str, t_token_type type);
 void		ft_token_clear(t_token **head);
 
 int			ft_is_blank(char c);
 int			ft_is_operator(char c);
-int			ft_handle_operator(t_token **token, char *line, int *i);
-int			ft_handle_word(t_token **token, char *line, int *start);
 int			ft_handle_redir(t_token **token, char *line, int *i);
 
 void		ft_close_fds(t_cmd *cmd, int fd[2], int *reading);
@@ -130,14 +130,19 @@ void		ft_exec_built_in(t_args *args, t_cmd *cmd, int *reading);
 void		ft_built_in_only(t_args *args);
 
 t_env		*init_env(char **envp);
+t_env		*create_env_node(char *env_str);
+t_env		*find_env_node(t_env *env_list, char *key);
 void		env_add_back(t_env **env_list, t_env *new_node);
 void		free_env_node(t_env *node);
-t_env		*create_env_node(char *env_str);
 int 		builtin_env(t_env *env_list, int fd_out);
 int			builtin_export(t_args *cmd_node, t_env **env_list);
 int			builtin_pwd(int fd_out);
 int			builtin_unset(t_args *cmd_node, t_env **env_list);
+int			builtin_cd(char **args, t_env **env);
+int			builtin_echo(char **args, int fd_out);
+int			builtin_exit(char **args, t_env *env_list, int last_status);
 int			is_valid_env_name(char *str);
 
+void	ft_print_error_cmd(char *cmd);
 
 #endif

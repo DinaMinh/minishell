@@ -106,6 +106,6 @@ int	builtin_export(t_args *cmd_node, t_env **env_list)
 		}
 		i++;
 	}
-	cmd_node->return_value = exit_status;
+	cmd_node->return_val = exit_status;
 	return (exit_status);
 }

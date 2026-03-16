@@ -17,7 +17,7 @@ static void	ft_built_in_cmds(t_args *args, t_cmd *cmd)
 	if (!cmd)
 		cmd = args->cmd;
 	if (ft_strncmp(cmd->cmd[0], ECHO, ECHO_LEN) == 0)
-		return ;
+		builtin_echo(cmd->cmd, STDOUT_FILENO);
 	else if (ft_strncmp(cmd->cmd[0], CD, CD_LEN) == 0)
 		return ;
 	else if (ft_strncmp(cmd->cmd[0], PWD, PWD_LEN) == 0)

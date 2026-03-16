@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 15:10:36 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/16 00:14:23 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/16 14:11:34 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,11 @@ int	ft_minishell(t_token *token, t_args args)
 {
 	args.input = readline(PROMPT);
 	add_history(args.input);
-	token = ft_lexer(args.input);
+	token = ft_lexer(&args);
 	args.cmd = ft_cmd(token, args.cmd, &args.nb_cmd);
-	if (args.input)
+	if (args.return_val)
+		;
+	else if (args.input)
 	{
 		if (!ft_exit(&args, token))
 		{

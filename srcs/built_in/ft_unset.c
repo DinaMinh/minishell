@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:28:55 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/16 00:29:16 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/16 15:38:58 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,6 @@ int	builtin_unset(t_args *cmd_node, t_env **env_list)
 			remove_env_node(env_list, args[i]);
 		i++;
 	}
-	cmd_node->return_value = exit_status;
+	cmd_node->return_val = exit_status;
 	return (exit_status);
 }
