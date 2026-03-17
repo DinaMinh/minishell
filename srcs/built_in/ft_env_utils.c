@@ -6,13 +6,13 @@
 /*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 10:38:21 by ebourdet          #+#    #+#             */
-/*   Updated: 2026/03/17 10:38:27 by ebourdet         ###   ########.fr       */
+/*   Updated: 2026/03/17 23:19:09 by ebourdet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_env	*create_env_node(char *env_str)
+t_env	*create_env_node(char *env_str, bool is_local)
 {
 	t_env	*node;
 	char	*equal_sign;
@@ -33,6 +33,7 @@ t_env	*create_env_node(char *env_str)
 		node->key = ft_strdup(env_str);
 		node->value = NULL;
 	}
+	node->local = is_local;
 	node->next = NULL;
 	if (!node->key || (equal_sign != NULL && !node->value))
 	{
@@ -79,7 +80,7 @@ t_env	*init_env(char **envp)
 	i = 0;
 	while (envp[i] != NULL)
 	{
-		new_node = create_env_node(envp[i]);
+		new_node = create_env_node(envp[i], false);
 		if (new_node != NULL)
 			env_add_back(&env_list, new_node);
 		i++;

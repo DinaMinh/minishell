@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pipe.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 16:37:16 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/17 17:27:26 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/17 23:13:39 by ebourdet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static void	ft_child(t_cmd *cmd, int fd[2], int *reading, char **envp)
 {
+	setup_child_signals();
 	if (*reading != 0)
 		dup2(*reading, STDIN_FILENO);
 	if (cmd->infile)
@@ -63,6 +64,7 @@ void	ft_exec_loop(t_args *args, t_token *token, int *reading)
 	int		pid;
 	int		i;
 
+	setup_parent_signals();
 	i = 0;
 	cmd = args->cmd;
 	while (i < args->nb_cmd)

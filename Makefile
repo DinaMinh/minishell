@@ -3,7 +3,7 @@ NAME := minishell
 SRC := main.c  \
 	
 
-SRC_BUILT_IN := env_utils.c ft_env.c  ft_export.c  ft_pwd.c  ft_unset.c \
+SRC_BUILT_IN := ft_env_utils.c ft_env.c  ft_export.c  ft_pwd.c  ft_unset.c \
 	ft_echo.c ft_exit.c ft_export_utils.c ft_cd.c
 
 SRC_EXEC := ft_clean_exit.c ft_pipe.c ft_exec_utils.c ft_exec_built_in.c \
@@ -11,11 +11,12 @@ SRC_EXEC := ft_clean_exit.c ft_pipe.c ft_exec_utils.c ft_exec_built_in.c \
 
 SRC_PARSING := ft_parsing.c ft_cmd.c 
 
-SRC_LEXER := ft_lexer.c ft_lexer_utils.c ft_token_utils.c ft_lexer_redir.c
+SRC_LEXER := ft_lexer.c ft_lexer_utils.c ft_token_utils.c ft_lexer_redir.c \
+	ft_local_var.c ft_env_to_array.c
 
 SRC_EXPAND := ft_expand.c ft_expand_utils.c
 
-SRC_SIGNALS := 
+SRC_SIGNALS := ft_signals.c
 
 SRC_DIR := ./srcs/
 BUILT_IN_DIR := $(SRC_DIR)built_in/
@@ -47,7 +48,7 @@ OBJ += $(addprefix $(OBJ_DIR), $(SRC_LEXER:.c=.o))
 OBJ += $(addprefix $(OBJ_DIR), $(SRC_EXPAND:.c=.o))
 OBJ += $(addprefix $(OBJ_DIR), $(SRC_SIGNALS:.c=.o))
 
-vpath %.c $(SRC_DIR):$(BUILT_IN_DIR):$(EXEC_DIR):$(PARSING_DIR):$(EXPAND_DIR):$(LEXER_DIR)
+vpath %.c $(SRC_DIR):$(BUILT_IN_DIR):$(EXEC_DIR):$(PARSING_DIR):$(EXPAND_DIR):$(LEXER_DIR):$(SIGNALS_DIR)
 
 INCLUDES := includes/
 
