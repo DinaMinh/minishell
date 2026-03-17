@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_exit.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/17 10:39:45 by ebourdet          #+#    #+#             */
+/*   Updated: 2026/03/17 10:39:47 by ebourdet         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	is_numeric_argument(char *str)
@@ -23,7 +35,6 @@ int	builtin_exit(char **args, t_env *env_list, int last_status)
 	int exit_code;
 
 	ft_putendl_fd("exit", STDERR_FILENO);
-	(void)env_list;
 	if (args[1] == NULL)
 	{
 		//free_tout(env_list);

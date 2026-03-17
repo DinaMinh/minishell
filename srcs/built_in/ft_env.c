@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/16 00:27:56 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/16 00:27:58 by dminh            ###   ########.fr       */
+/*   Created: 2026/03/17 10:39:28 by ebourdet          #+#    #+#             */
+/*   Updated: 2026/03/17 10:39:34 by ebourdet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	builtin_env(t_env *env_list, int fd_out)
+int builtin_env(t_env *env_list, int fd_out)
 {
 	t_env	*current;
 

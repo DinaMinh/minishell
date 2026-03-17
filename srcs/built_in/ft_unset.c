@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/16 00:28:55 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/16 15:38:58 by dminh            ###   ########.fr       */
+/*   Created: 2026/03/17 10:35:10 by ebourdet          #+#    #+#             */
+/*   Updated: 2026/03/17 10:40:44 by ebourdet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	remove_env_node(t_env **env_list, char *key)
 	prev = NULL;
 	while (current != NULL)
 	{
-		if (ft_strncmp(current->key, key, ft_strlen(key)) == 0)
+		if (ft_strcmp(current->key, key) == 0)
 		{
 			if (prev == NULL)
 				*env_list = current->next;
@@ -46,11 +46,12 @@ int	builtin_unset(t_args *cmd_node, t_env **env_list)
 	int		exit_status;
 	char	**args;
 
-	args = cmd_node->cmd->cmd;
+	args = cmd_node->cmd;
 	exit_status = 0;
 	i = 1;
 	if (args[1] == NULL)
 		return (0);
+
 	while (args[i] != NULL)
 	{
 		if (!is_valid_env_name(args[i]) || ft_strchr(args[i], '='))
