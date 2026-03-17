@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 16:11:03 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/16 15:45:18 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/17 17:26:16 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ typedef struct s_env
 {
 	char			*key;
 	char			*value;
+	bool			local;
 	struct s_env	*next;
 }	t_env;	
 
