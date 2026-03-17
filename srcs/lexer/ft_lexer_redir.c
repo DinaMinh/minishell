@@ -12,20 +12,17 @@
 
 #include "minishell.h"
 
-int	ft_add_filename(t_token **token, int len, char *line, char quote)
+static int	ft_add_filename(t_token **token, int len, char *line)
 {
 	char	*res;
 
-	if (quote != 0)
-		res = ft_substr(line, 0, len - 1);
-	else
-		res = ft_substr(line, 0, len);
+	res = ft_substr(line, 0, len);
 	if (!res || ft_token_addback(token, res, TOKEN_FILENAME))
 		return (false);
 	return (true);
 }
 
-int	ft_handle_filename(t_token **token, char *line, int *start)
+static int	ft_handle_filename(t_token **token, char *line, int *start)
 {
 	char	quote;
 	int		end;
@@ -37,8 +34,6 @@ int	ft_handle_filename(t_token **token, char *line, int *start)
 	{
 		if (line[end] == D_QUOTE || line[end] == S_QUOTE)
 		{
-			if (end == *start)
-				(*start)++;
 			quote = line[end];
 			end++;
 			while (line[end] && line[end] != quote)
@@ -47,7 +42,7 @@ int	ft_handle_filename(t_token **token, char *line, int *start)
 		else
 			end++;
 	}
-	if (ft_add_filename(token, end - *start, &line[*start], quote) == false)
+	if (ft_add_filename(token, end - *start, &line[*start]) == false)
 		return (1);
 	*start = end;
 	return (0);

@@ -49,7 +49,7 @@ static int	ft_handle_word(t_token **token, char *line, int *start)
 	{
 		if (line[end] == D_QUOTE || line[end] == S_QUOTE)
 		{
-			if (ft_handle_quotes(line, &end, start, &quote))
+			if (ft_handle_quotes(line, &end, &quote))
 			{
 				ft_putstr_fd("Unclosed quote. Returning to prompt\n", 2);
 				return (1);
@@ -58,7 +58,7 @@ static int	ft_handle_word(t_token **token, char *line, int *start)
 		else
 			end++;
 	}
-	if (ft_add_word(token, end - *start, &line[*start], quote) == false)
+	if (ft_add_word(token, end - *start, &line[*start]) == false)
 		return (1);
 	*start = end;
 	return (0);
@@ -68,14 +68,16 @@ t_token	*ft_lexer(t_args *args)
 {
 	t_token	*token_list;
 	int		i;
+	int		status;
 
 	token_list = NULL;
+	status = args->return_val;
 	i = 0;
-	while (args->input[i] && args->return_val == 0)
+	while (args->input[i])
 	{
 		while (args->input[i] && ft_is_blank(args->input[i]))
 			i++;
-		if (!args->input[i])
+		if (!args->input[i] || args->return_val == 1)
 			break ;
 		if (ft_is_operator(args->input[i]) == true)
 			args->return_val = ft_handle_operator(&token_list, args->input, &i);
@@ -87,6 +89,7 @@ t_token	*ft_lexer(t_args *args)
 		ft_token_clear(&token_list);
 		return (NULL);
 	}
+	args->return_val = status;
 	return (token_list);
 }
 //int	main(void)

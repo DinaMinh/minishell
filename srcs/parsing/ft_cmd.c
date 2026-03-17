@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 10:24:34 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/16 13:51:13 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/17 13:07:13 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	ft_filename(t_token *token, char **in, char **out, t_token_type type)
 {
 	if (type == TOKEN_REDIR_IN)
 		*in = token->content;
-	else if (type == TOKEN_REDIR_OUT)
+	else if (type == TOKEN_REDIR_OUT || type == TOKEN_APPEND)
 		*out = token->content;
 }
 
@@ -58,7 +58,8 @@ t_cmd	*ft_get_cmd_size(t_token *token)
 		if (token->type == TOKEN_WORD)
 			size++;
 		else if (token->type == TOKEN_REDIR_IN
-			|| token->type == TOKEN_REDIR_OUT)
+			|| token->type == TOKEN_REDIR_OUT || token->type == TOKEN_APPEND
+			|| token->type == TOKEN_HEREDOC)
 			file_type = token->type;
 		else if (token->type == TOKEN_FILENAME)
 			ft_filename(token, &infile, &outfile, file_type);

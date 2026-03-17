@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 16:37:16 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/16 14:51:47 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/17 12:54:19 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,15 @@ static void	ft_parent(t_cmd *cmd, int fd[2], int *reading)
 	}
 }
 
-void	ft_exec_child(t_args *args, t_cmd *cmd, int *reading)
+void	ft_exec_child(t_args *args, t_cmd *cmd, t_token *token, int *reading)
 {
 	if (cmd->built_in)
-		ft_exec_built_in(args, cmd, reading);
+		ft_built_in(args, cmd, token, reading);
 	else
 		ft_child(cmd, args->fd, reading, args->envp);
 }
 
-void	ft_exec_loop(t_args *args, int *reading)
+void	ft_exec_loop(t_args *args, t_token *token, int *reading)
 {
 	t_cmd	*cmd;
 	int		pid;
@@ -71,7 +71,7 @@ void	ft_exec_loop(t_args *args, int *reading)
 			pipe(args->fd);
 		pid = fork();
 		if (pid == CHILD)
-			ft_exec_child(args, cmd, reading);
+			ft_exec_child(args, cmd, token, reading);
 		else
 			ft_parent(cmd, args->fd, reading);
 		if (cmd->next)
@@ -80,7 +80,7 @@ void	ft_exec_loop(t_args *args, int *reading)
 	}
 }
 
-void	ft_exec(t_args *args)
+void	ft_exec(t_args *args, t_token *token)
 {
 	int		i;
 	int		status;
@@ -92,11 +92,11 @@ void	ft_exec(t_args *args)
 	{
 		if (args->cmd->built_in)
 		{
-			ft_built_in_only(args);
+			ft_built_in_only(args, token);
 			return ;
 		}
 	}
-	ft_exec_loop(args, &reading);
+	ft_exec_loop(args, token, &reading);
 	while (i < args->nb_cmd)
 	{
 		wait(&status);

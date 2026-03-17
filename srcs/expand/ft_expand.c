@@ -1,0 +1,90 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_expand.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/16 23:40:58 by ebourdet          #+#    #+#             */
+/*   Updated: 2026/03/17 16:32:43 by dminh            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+static int	handle_dollar(char *str, int i, char **new_str, t_args *args)
+{
+	int		len;
+	char	*var_name;
+	t_env	*node;
+	char	*status;
+
+	if (str[i] == '?')
+	{
+		status = ft_itoa(args->return_val);
+		*new_str = ft_append_str(*new_str, status);
+		free(status);
+		return (1);
+	}
+	if (!str[i] || (!ft_isalnum(str[i]) && str[i] != '_'))
+	{
+		*new_str = ft_append_char(*new_str, '$');
+		return (0);
+	}
+	len = 0;
+	while (str[i + len] && (ft_isalnum(str[i + len]) || str[i + len] == '_'))
+		len++;
+	var_name = ft_substr(str, i, len);
+	node = find_env_node(args->env, var_name);
+	if (node && node->value)
+		*new_str = ft_append_str(*new_str, node->value);
+	free(var_name);
+	return (len);
+}
+
+static char	*expand_and_strip(char *str, t_args *args)
+{
+	int		i;
+	int		in_sq;
+	int		in_dq;
+	char	*res;
+
+	i = 0;
+	in_sq = 0;
+	in_dq = 0;
+	res = NULL;
+	while (str[i])
+	{
+		if (str[i] == '\'' && !in_dq)
+			in_sq = !in_sq;
+		else if (str[i] == '"' && !in_sq)
+			in_dq = !in_dq;
+		else if (str[i] == '$' && !in_sq)
+			i += handle_dollar(str, i + 1, &res, args);
+		else
+			res = ft_append_char(res, str[i]);
+		i++;
+	}
+	return (res);
+}
+
+void	ft_expand_tokens(t_token *tokens, t_args *args)
+{
+	t_token	*tmp;
+	char	*expanded;
+
+	tmp = tokens;
+	while (tmp)
+	{
+		if (tmp->type == TOKEN_WORD || tmp->type == TOKEN_FILENAME)
+		{
+			expanded = expand_and_strip(tmp->content, args);
+			free(tmp->content);
+			if (!expanded)
+				tmp->content = ft_strdup("");
+			else
+				tmp->content = expanded;
+		}
+		tmp = tmp->next;
+	}
+}

@@ -57,7 +57,7 @@
 # define EXIT "exit"
 # define EXIT_LEN 4
 
-typedef enum  e_token_type
+typedef enum e_token_type
 {
 	TOKEN_WORD,
 	TOKEN_FILENAME,
@@ -111,12 +111,12 @@ int			ft_get_path(t_cmd *cmd, t_token *token);
 int			ft_check_built_in(t_args *args);
 void		ft_free_all(t_args *args);
 
-int			ft_exit(t_args *args, t_token *token);
+int			ft_exit(t_args *args, t_token *token, int exit_code);
 
 t_token		*ft_lexer(t_args *args);
 t_token		*ft_token_new(char *str, t_token_type type);
-int			ft_handle_quotes(char *line, int *end, int *start, char *quote);
-int			ft_add_word(t_token **token, int len, char *line, char quote);
+int			ft_handle_quotes(char *line, int *end, char *quote);
+int			ft_add_word(t_token **token, int len, char *line);
 int			ft_token_addback(t_token **head, char *str, t_token_type type);
 void		ft_token_clear(t_token **head);
 
@@ -125,24 +125,29 @@ int			ft_is_operator(char c);
 int			ft_handle_redir(t_token **token, char *line, int *i);
 
 void		ft_close_fds(t_cmd *cmd, int fd[2], int *reading);
-void		ft_exec(t_args *args);
-void		ft_exec_built_in(t_args *args, t_cmd *cmd, int *reading);
-void		ft_built_in_only(t_args *args);
+void		ft_exec(t_args *args, t_token *token);
+void		ft_built_in(t_args *args, t_cmd *cmd, t_token *token, int *reading);
+void		ft_built_in_only(t_args *args, t_token *token);
 
 t_env		*init_env(char **envp);
 t_env		*create_env_node(char *env_str);
 t_env		*find_env_node(t_env *env_list, char *key);
+char		*ft_append_char(char *str, char c);
+char		*ft_append_str(char *s1, char *s2);
 void		env_add_back(t_env **env_list, t_env *new_node);
+void		update_env(t_env **env_list, char *key, char *value);
 void		free_env_node(t_env *node);
-int 		builtin_env(t_env *env_list, int fd_out);
+void		sort_and_print_env(t_env *env_list, int fd_out);
+void		ft_expand_tokens(t_token *tokens, t_args *args);
+int			builtin_env(t_env *env_list, int fd_out);
 int			builtin_export(t_args *cmd_node, t_env **env_list);
 int			builtin_pwd(int fd_out);
 int			builtin_unset(t_args *cmd_node, t_env **env_list);
 int			builtin_cd(char **args, t_env **env);
 int			builtin_echo(char **args, int fd_out);
-int			builtin_exit(char **args, t_env *env_list, int last_status);
+int			builtin_exit(t_args *main, t_token *token, char **cmd);
 int			is_valid_env_name(char *str);
 
-void	ft_print_error_cmd(char *cmd);
+void		ft_print_error_cmd(char *cmd);
 
 #endif

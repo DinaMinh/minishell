@@ -23,7 +23,7 @@ t_env	*find_env_node(t_env *env_list, char *key)
 	while (env_list != NULL)
 	{
 		len_node = ft_strlen(env_list->key);
-		if (len_key == len_node && ft_strncmp(env_list->key, key, len_key) == 0)
+		if (len_key == len_node && ft_strcmp(env_list->key, key) == 0)
 			return (env_list);
 		env_list = env_list->next;
 	}
@@ -79,7 +79,7 @@ int	builtin_export(t_args *cmd_node, t_env **env_list)
 	int		exit_status;
 	char	**args;
 
-	args = cmd_node->cmd;
+	args = cmd_node->cmd->cmd;
 	exit_status = 0;
 	if (args[1] == NULL)
 	{

@@ -6,7 +6,7 @@
 /*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 10:39:45 by ebourdet          #+#    #+#             */
-/*   Updated: 2026/03/17 10:39:47 by ebourdet         ###   ########.fr       */
+/*   Updated: 2026/03/17 14:34:17 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,30 +30,28 @@ static int	is_numeric_argument(char *str)
 	return (1);
 }
 
-int	builtin_exit(char **args, t_env *env_list, int last_status)
+int	builtin_exit(t_args *main, t_token *token, char **cmd)
 {
 	int exit_code;
+	int	last_status;
 
 	ft_putendl_fd("exit", STDERR_FILENO);
-	if (args[1] == NULL)
-	{
-		//free_tout(env_list);
-		exit(last_status);
-	}
-	if (!is_numeric_argument(args[1]))
+	last_status = main->return_val;
+	if (cmd[1] == NULL)
+		ft_exit(main, token, last_status);
+	if (!is_numeric_argument(cmd[1]))
 	{
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
-		ft_putstr_fd(args[1], STDERR_FILENO);
+		ft_putstr_fd(cmd[1], STDERR_FILENO);
 		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
-		//free_tout(env_list);
-		exit(255);
+		ft_exit(main, token, 255);
 	}
-	if (args[2] != NULL)
+	if (cmd[2] != NULL)
 	{
 		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
 		return (1);
 	}
-	exit_code = ft_atoi(args[1]);
-	//free_tout(env_list);
-	exit(exit_code % 256); 
+	exit_code = ft_atoi(cmd[1]);
+	ft_exit(main, token, exit_code % 256);
+	return (0);
 }

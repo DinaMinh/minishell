@@ -67,8 +67,7 @@ static void	sort_env_array(t_env **arr, int size)
 		j = 0;
 		while (j < size - i - 1)
 		{
-			if (ft_strncmp(arr[j]->key, arr[j + 1]->key,
-					ft_strlen(arr[j]->key) + 1) > 0)
+			if (ft_strcmp(arr[j]->key, arr[j + 1]->key) > 0)
 			{
 				tmp = arr[j];
 				arr[j] = arr[j + 1];

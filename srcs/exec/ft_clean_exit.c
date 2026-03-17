@@ -43,14 +43,18 @@ void	ft_free_all(t_args *args)
 	args->nb_cmd = 0;
 }
 
-int	ft_exit(t_args *args, t_token *token)
+int	ft_exit(t_args *args, t_token *token, int exit_code)
 {
-	if (ft_strncmp(args->input, EXIT, EXIT_LEN) == 0)
+	t_env	*tmp;
+
+	ft_free_all(args);
+	while (args->env)
 	{
-		ft_free_all(args);
-		ft_token_clear(&token);
-		rl_clear_history();
-		exit(EXIT_SUCCESS);
+		tmp = args->env->next;
+		free_env_node(args->env);
+		args->env = tmp;
 	}
-	return (0);
+	ft_token_clear(&token);
+	rl_clear_history();
+	exit(exit_code);
 }

@@ -46,7 +46,7 @@ int	builtin_unset(t_args *cmd_node, t_env **env_list)
 	int		exit_status;
 	char	**args;
 
-	args = cmd_node->cmd;
+	args = cmd_node->cmd->cmd;
 	exit_status = 0;
 	i = 1;
 	if (args[1] == NULL)

@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 14:26:00 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/16 14:53:28 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/17 16:12:11 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,23 +26,18 @@ int	ft_is_operator(char c)
 	return (false);
 }
 
-int	ft_add_word(t_token **token, int len, char *line, char quote)
+int	ft_add_word(t_token **token, int len, char *line)
 {
 	char	*res;
 
-	if (quote != '\0')
-		res = ft_substr(line, 0, len - 1);
-	else
-		res = ft_substr(line, 0, len);
+	res = ft_substr(line, 0, len);
 	if (!res || ft_token_addback(token, res, TOKEN_WORD))
 		return (false);
 	return (true);
 }
 
-int	ft_handle_quotes(char *line, int *end, int *start, char *quote)
+int	ft_handle_quotes(char *line, int *end, char *quote)
 {
-	if (*end == *start)
-		(*start)++;
 	*quote = line[*end];
 	(*end)++;
 	while (line[*end] && line[*end] != *quote)
