@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_pipe.c                                          :+:      :+:    :+:   */
+/*   ft_exec.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/09 16:37:16 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/18 14:07:18 by dminh            ###   ########.fr       */
+/*   Created: 2026/03/18 14:30:16 by dminh             #+#    #+#             */
+/*   Updated: 2026/03/18 14:54:42 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,15 @@ void	ft_exec_loop(t_args *args, t_token *token, int *reading)
 	}
 }
 
+void	ft_print_interrupt(t_args *args, int status)
+{
+	if (status == SIGINT)
+		ft_putstr_fd("\n", STDOUT_FILENO);
+	else
+		ft_putstr_fd("Quit (core dumped)\n", STDOUT_FILENO);
+	args->return_val = WIFSIGNALED(status) + 128;
+}
+
 void	ft_exec(t_args *args, t_token *token)
 {
 	int		i;
@@ -132,7 +141,10 @@ void	ft_exec(t_args *args, t_token *token)
 	while (i < args->nb_cmd)
 	{
 		wait(&status);
-		args->return_val = WEXITSTATUS(status);
+		if (WEXITSTATUS(status))
+			args->return_val = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+			ft_print_interrupt(args, status);
 		i++;
 	}
 }
