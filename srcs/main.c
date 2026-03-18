@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 15:10:36 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/17 16:56:33 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/18 10:43:47 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,7 @@ int	ft_minishell(t_token *token, t_args *args)
 	token = ft_lexer(args);
 	ft_expand_tokens(token, args);
 	args->cmd = ft_cmd(token, args->cmd, &args->nb_cmd);
-	if (args->return_val == 1)
-		;
-	else
+	if (args->cmd)
 	{
 		ft_check_built_in(args);
 		status = ft_get_path(args->cmd, token);
@@ -45,6 +43,7 @@ int	main(int ac, char **av, char **envp)
 
 	ft_memset(&args, 0, sizeof(args));
 	token = NULL;
+	args.envp = envp;
 	args.env = init_env(envp);
 	if (ac != 1 || av[1])
 		return (EXIT_FAILURE);

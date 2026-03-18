@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 12:38:06 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/16 00:24:51 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/18 12:30:16 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	ft_add_filename(t_token **token, int len, char *line)
 	return (true);
 }
 
-static int	ft_handle_filename(t_token **token, char *line, int *start)
+int	ft_handle_filename(t_token **token, char *line, int *start)
 {
 	char	quote;
 	int		end;
@@ -48,16 +48,27 @@ static int	ft_handle_filename(t_token **token, char *line, int *start)
 	return (0);
 }
 
-int	ft_handle_redir(t_token **token, char *line, int *i)
+int	ft_handle_redir(t_token **token, char *line, int *i, t_token_type type)
 {
 	int	err;
 
 	err = 0;
-	if (line[*i] == '<')
-		err = ft_token_addback(token, ft_strdup("<"), TOKEN_REDIR_IN);
-	else if (line[*i] == '>')
-		err = ft_token_addback(token, ft_strdup(">"), TOKEN_REDIR_OUT);
-	(*i)++;
+	if (type == TOKEN_APPEND || type == TOKEN_HEREDOC)
+	{
+		if (type == TOKEN_APPEND)
+			err = ft_token_addback(token, ft_strdup(">>"), type);
+		else
+			err = ft_token_addback(token, ft_strdup("<<"), type);
+		*i += 2;
+	}
+	else
+	{
+		if (line[*i] == '<')
+			err = ft_token_addback(token, ft_strdup("<"), type);
+		else if (line[*i] == '>')
+			err = ft_token_addback(token, ft_strdup(">"), type);
+		(*i)++;
+	}
 	while (line[*i] && ft_is_blank(line[*i]))
 		(*i)++;
 	if (!line[*i])

@@ -6,12 +6,28 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 18:09:13 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/16 15:37:11 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/18 13:32:23 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	ft_redir_clear(t_fd **redir) 
+{
+	t_fd	*tmp;
+
+	while (*redir)
+	{
+		tmp = (*redir)->next;
+		if ((*redir)->file_type == TOKEN_HEREDOC)
+		{
+			unlink((*redir)->filename);
+			free((*redir)->filename);
+		}
+		free(*redir);
+		*redir = tmp;
+	}
+}
 void	ft_cmd_clear(t_cmd **head)
 {
 	t_cmd	*tmp;
@@ -26,6 +42,7 @@ void	ft_cmd_clear(t_cmd **head)
 			free((*head)->cmd[i]);
 			i++;
 		}
+		ft_redir_clear(&(*head)->redir);
 		free((*head)->cmd);
 		free((*head)->path);
 		(*head)->path = NULL;

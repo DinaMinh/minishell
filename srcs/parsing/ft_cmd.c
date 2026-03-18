@@ -6,13 +6,13 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 10:24:34 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/17 17:13:42 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/18 12:44:10 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_cmd	*ft_init_cmd(char *infile, char *outfile, int size)
+t_cmd	*ft_init_cmd(t_fd *redir, int size)
 {
 	t_cmd	*node;
 
@@ -22,50 +22,59 @@ t_cmd	*ft_init_cmd(char *infile, char *outfile, int size)
 	node->cmd = ft_calloc(size + 1, sizeof(*node->cmd));
 	if (!node->cmd)
 		return (NULL);
-	node->path = NULL;
-	node->infile = infile;
-	node->outfile = outfile;
-	node->in_fd = 0;
-	node->out_fd = 0;
-	node->built_in = false;
-	node->append = false;
-	node->next = NULL;
+	node->redir = redir;
 	return (node);
 }
 
-void	ft_filename(t_token *token, char **in, char **out, t_token_type type)
+
+int	ft_check_redir(t_token **token, t_fd **redir, int *heredoc_nb)
 {
-	if (type == TOKEN_REDIR_IN)
-		*in = token->content;
-	else if (type == TOKEN_REDIR_OUT || type == TOKEN_APPEND)
-		*out = token->content;
+	char			*filename;
+	t_token_type	file_type;
+
+	file_type = TOKEN_WORD;
+	filename = NULL;
+	if ((*token)->type == TOKEN_REDIR_IN
+			|| (*token)->type == TOKEN_REDIR_OUT || (*token)->type == TOKEN_APPEND
+			|| (*token)->type == TOKEN_HEREDOC)
+	{
+		file_type = (*token)->type;
+		*token = (*token)->next;
+	}
+	if (*token && file_type == TOKEN_HEREDOC)
+	{
+		if (ft_init_heredoc(token, redir, heredoc_nb, file_type))
+			return (1);
+	}
+	if (*token && (*token)->type == TOKEN_FILENAME)
+		filename = (*token)->content;
+	if (file_type != TOKEN_HEREDOC)
+	{
+		if (!ft_fd_addback(redir, filename, file_type))
+			return (1);
+	}
+	return (0);
 }
 
 t_cmd	*ft_get_cmd_size(t_token *token)
 {
 	t_cmd			*cmd;
-	char			*infile;
-	char			*outfile;
+	t_fd			*redir;
 	int				size;
-	t_token_type	file_type;
+	int				heredoc;
 
-	infile = NULL;
-	outfile = NULL;
-	file_type = TOKEN_WORD;
+	redir = NULL;
 	size = 0;
+	heredoc = 0;
 	while (token && token->type != TOKEN_PIPE)
 	{
 		if (token->type == TOKEN_WORD)
 			size++;
-		else if (token->type == TOKEN_REDIR_IN
-			|| token->type == TOKEN_REDIR_OUT || token->type == TOKEN_APPEND
-			|| token->type == TOKEN_HEREDOC)
-			file_type = token->type;
-		else if (token->type == TOKEN_FILENAME)
-			ft_filename(token, &infile, &outfile, file_type);
+		else
+			ft_check_redir(&token, &redir, &heredoc);
 		token = token->next;
 	}
-	cmd = ft_init_cmd(infile, outfile, size);
+	cmd = ft_init_cmd(redir, size);
 	return (cmd);
 }
 

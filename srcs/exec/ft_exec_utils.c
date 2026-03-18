@@ -12,6 +12,15 @@
 
 #include "minishell.h"
 
+void	ft_close_redir(t_fd *redir)
+{
+	while (redir)
+	{
+		close(redir->fd);
+		redir = redir->next;
+	}
+}
+
 void	ft_close_fds(t_cmd *cmd, int fd[2], int *reading)
 {
 	if (*reading != 0)
@@ -21,8 +30,6 @@ void	ft_close_fds(t_cmd *cmd, int fd[2], int *reading)
 		close(fd[PIPE_READ]);
 		close(fd[PIPE_WRITE]);
 	}
-	if (cmd->in_fd != 0)
-		close(cmd->in_fd);
-	if (cmd->out_fd != 0)
-		close(cmd->out_fd);
+	if (cmd->redir)
+		ft_close_redir(cmd->redir);
 }

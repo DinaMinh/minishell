@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:37:03 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/16 14:51:34 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/18 12:25:52 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,23 +17,22 @@ static int	ft_handle_operator(t_token **token, char *line, int *i)
 	int	err;
 
 	err = 0;
-	if (ft_strncmp("<<", &line[*i], 2) == 0)
-	{
-		err = ft_token_addback(token, ft_strdup("<<"), TOKEN_HEREDOC);
-		*i += 2;
-	}
-	else if (ft_strncmp(">>", &line[*i], 2) == 0)
-	{
-		err = ft_token_addback(token, ft_strdup(">>"), TOKEN_APPEND);
-		*i += 2;
-	}
+	if (ft_strncmp(">>", &line[*i], 2) == 0)
+		err = ft_handle_redir(token, line, i, TOKEN_APPEND);
+	else if (ft_strncmp("<<", &line[*i], 2) == 0)
+		err = ft_handle_redir(token, line, i, TOKEN_HEREDOC);
 	else
 	{
 		if (line[*i] == '|')
+		{
 			err = ft_token_addback(token, ft_strdup("|"), TOKEN_PIPE);
-		else if (line[*i] == '<' || line[*i] == '>')
-			err = ft_handle_redir(token, line, i);
-		(*i)++;
+			(*i)++;
+		}
+		else if (line[*i] == '<') 
+			err = ft_handle_redir(token, line, i, TOKEN_REDIR_IN);
+		else if (line[*i] == '>')
+			err = ft_handle_redir(token, line, i, TOKEN_REDIR_OUT);
+
 	}
 	return (err);
 }
@@ -71,25 +70,25 @@ t_token	*ft_lexer(t_args *args)
 	int		status;
 
 	token_list = NULL;
-	status = args->return_val;
+	status = 0;
 	i = 0;
 	while (args->input[i])
 	{
 		while (args->input[i] && ft_is_blank(args->input[i]))
 			i++;
-		if (!args->input[i] || args->return_val == 1)
+		if (!args->input[i] || status)
 			break ;
 		if (ft_is_operator(args->input[i]) == true)
-			args->return_val = ft_handle_operator(&token_list, args->input, &i);
+			status = ft_handle_operator(&token_list, args->input, &i);
 		else
-			args->return_val = ft_handle_word(&token_list, args->input, &i);
+			status = ft_handle_word(&token_list, args->input, &i);
 	}
-	if (args->return_val)
+	if (status)
 	{
+		args->return_val = status;
 		ft_token_clear(&token_list);
 		return (NULL);
 	}
-	args->return_val = status;
 	return (token_list);
 }
 //int	main(void)

@@ -9,11 +9,13 @@ SRC_BUILT_IN := env_utils.c ft_env.c  ft_export.c  ft_pwd.c  ft_unset.c \
 SRC_EXEC := ft_clean_exit.c ft_pipe.c ft_exec_utils.c ft_exec_built_in.c \
 	ft_print_error.c
 
-SRC_PARSING := ft_parsing.c ft_cmd.c 
+SRC_PARSING := ft_parsing.c ft_cmd.c ft_fd.c
 
 SRC_LEXER := ft_lexer.c ft_lexer_utils.c ft_token_utils.c ft_lexer_redir.c
 
 SRC_EXPAND := ft_expand.c ft_expand_utils.c
+
+SRC_HEREDOC := ft_heredoc.c
 
 SRC_SIGNALS := 
 
@@ -23,6 +25,7 @@ EXEC_DIR := $(SRC_DIR)exec/
 PARSING_DIR := $(SRC_DIR)parsing/
 EXPAND_DIR := $(SRC_DIR)expand/
 LEXER_DIR := $(SRC_DIR)lexer/
+HEREDOC_DIR := $(SRC_DIR)heredoc/
 SIGNALS_DIR := $(SRC_DIR)signals/
 OBJ_DIR := ./objects/
 BIN_DIR := ./bin/
@@ -33,8 +36,9 @@ ALL_EXEC := $(addprefix $(EXEC_DIR), $(SRC_EXEC))
 ALL_PARSING := $(addprefix $(PARSING_DIR), $(SRC_PARSING))
 ALL_LEXER := $(addprefix $(LEXER_DIR), $(SRC_LEXER))
 ALL_EXPAND := $(addprefix $(EXPAND_DIR), $(SRC_EXPAND))
+ALL_HEREDOC := $(addprefix $(EXPAND_DIR), $(SRC_HEREDOC))
 
-ALL_SRCS += $(ALL_BUILT_IN) $(ALL_EXEC) $(ALL_PARSING) $(ALL_LEXER) $(ALL_EXPAND)
+ALL_SRCS += $(ALL_BUILT_IN) $(ALL_EXEC) $(ALL_PARSING) $(ALL_LEXER) $(ALL_EXPAND) $(ALL_HEREDOC)
 
 LIBFT := libft/libft.a
 LIBFT_DIR := libft/
@@ -45,9 +49,10 @@ OBJ += $(addprefix $(OBJ_DIR), $(SRC_EXEC:.c=.o))
 OBJ += $(addprefix $(OBJ_DIR), $(SRC_PARSING:.c=.o))
 OBJ += $(addprefix $(OBJ_DIR), $(SRC_LEXER:.c=.o))
 OBJ += $(addprefix $(OBJ_DIR), $(SRC_EXPAND:.c=.o))
+OBJ += $(addprefix $(OBJ_DIR), $(SRC_HEREDOC:.c=.o))
 OBJ += $(addprefix $(OBJ_DIR), $(SRC_SIGNALS:.c=.o))
 
-vpath %.c $(SRC_DIR):$(BUILT_IN_DIR):$(EXEC_DIR):$(PARSING_DIR):$(EXPAND_DIR):$(LEXER_DIR)
+vpath %.c $(SRC_DIR):$(BUILT_IN_DIR):$(EXEC_DIR):$(PARSING_DIR):$(EXPAND_DIR):$(LEXER_DIR):$(HEREDOC_DIR):$(SIGNALS_DIR)
 
 INCLUDES := includes/
 

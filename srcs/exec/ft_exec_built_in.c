@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 17:39:26 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/17 12:53:45 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/17 23:06:38 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,29 +32,18 @@ static void	ft_built_in_cmds(t_args *args, t_cmd *cmd, t_token *token)
 		builtin_exit(args, token, cmd->cmd);
 }
 
-void	ft_built_in_only(t_args *args, t_token *token)
+void	ft_built_in_only(t_args *args, t_token *token, int *reading)
 {
 	int	input;
 	int	output;
 
 	input = dup(STDIN_FILENO);
 	output = dup(STDOUT_FILENO);
-	if (args->cmd->infile)
-	{
-		args->cmd->in_fd = open(args->cmd->infile, O_RDONLY);
-		dup2(args->cmd->in_fd, STDIN_FILENO);
-	}
-	if (args->cmd->outfile)
-	{
-		args->cmd->out_fd = open(args->cmd->outfile, O_CREAT | O_WRONLY
-				| O_TRUNC, S_IRWXU);
-		dup2(args->cmd->out_fd, STDOUT_FILENO);
-	}
+	if (args->cmd->redir)
+		ft_open_fds(args->cmd, args->fd);
 	ft_built_in_cmds(args, NULL, token);
-	if (args->cmd->infile)
-		close(args->cmd->in_fd);
-	if (args->cmd->outfile)
-		close(args->cmd->out_fd);
+	if (args->cmd->redir)
+		ft_close_fds(args->cmd, args->fd, reading);
 	dup2(input, STDIN_FILENO);
 	dup2(output, STDOUT_FILENO);
 	close(input);
@@ -65,19 +54,7 @@ void	ft_built_in(t_args *args, t_cmd *cmd, t_token *token, int *reading)
 {
 	if (*reading)
 		dup2(*reading, STDIN_FILENO);
-	if (args->cmd->infile)
-	{
-		cmd->in_fd = open(cmd->infile, O_RDONLY);
-		dup2(cmd->in_fd, STDIN_FILENO);
-	}
-	if (cmd->next)
-		dup2(args->fd[PIPE_WRITE], STDOUT_FILENO);
-	if (cmd->outfile)
-	{
-		cmd->out_fd = open(cmd->outfile, O_CREAT | O_WRONLY
-				| O_TRUNC, S_IRWXU);
-		dup2(cmd->out_fd, STDOUT_FILENO);
-	}
+	ft_open_fds(cmd, args->fd);
 	ft_built_in_cmds(args, cmd, token);
 	ft_close_fds(cmd, args->fd, reading);
 	exit(EXIT_SUCCESS);

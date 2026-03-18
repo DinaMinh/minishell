@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 16:11:03 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/17 17:26:16 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/18 01:09:15 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@
 # define CHILD 0
 # define PIPE_READ 0
 # define PIPE_WRITE 1
+# define HEREDOC ".tmp_heredoc"
 
 /* BUILT_IN */
 # define BUILT_IN_CMD "echo cd pwd export unset env exit"
@@ -83,16 +84,22 @@ typedef struct s_token
 	struct s_token			*next;
 }	t_token;
 
+typedef struct s_fd
+{
+	char			*filename;
+	char			*delimiter;
+	t_token_type	file_type;
+	int				fd;
+	struct s_fd	*next;
+}	t_fd;
+
 typedef struct s_cmd
 {
 	char			**cmd;
-	char			*path;
-	char			*infile;
-	char			*outfile;
-	int				in_fd;
-	int				out_fd;
+	char			*path;;
 	bool			built_in;
 	bool			append;
+	t_fd			*redir;
 	struct s_cmd	*next;
 }	t_cmd;
 
@@ -108,8 +115,12 @@ typedef struct s_args
 }	t_args;
 
 t_cmd		*ft_cmd(t_token *token, t_cmd *cmd, int *nb_cmd);
+t_fd		*ft_fd_new(char *filename, t_token_type file_type);
+t_fd		*ft_fd_addback(t_fd **redir, char *filename, t_token_type file_type);
 int			ft_get_path(t_cmd *cmd, t_token *token);
 int			ft_check_built_in(t_args *args);
+int			ft_init_heredoc(t_token **token, t_fd **redir, int *nb,
+			t_token_type type);
 void		ft_free_all(t_args *args);
 
 int			ft_exit(t_args *args, t_token *token, int exit_code);
@@ -117,18 +128,21 @@ int			ft_exit(t_args *args, t_token *token, int exit_code);
 t_token		*ft_lexer(t_args *args);
 t_token		*ft_token_new(char *str, t_token_type type);
 int			ft_handle_quotes(char *line, int *end, char *quote);
+int			ft_handle_filename(t_token **token, char *line, int *start);
 int			ft_add_word(t_token **token, int len, char *line);
 int			ft_token_addback(t_token **head, char *str, t_token_type type);
 void		ft_token_clear(t_token **head);
 
 int			ft_is_blank(char c);
 int			ft_is_operator(char c);
-int			ft_handle_redir(t_token **token, char *line, int *i);
+int			ft_handle_redir(t_token **token, char *line, int *i,
+			t_token_type type);
 
 void		ft_close_fds(t_cmd *cmd, int fd[2], int *reading);
 void		ft_exec(t_args *args, t_token *token);
+void		ft_open_fds(t_cmd *cmd, int fd[2]);
 void		ft_built_in(t_args *args, t_cmd *cmd, t_token *token, int *reading);
-void		ft_built_in_only(t_args *args, t_token *token);
+void		ft_built_in_only(t_args *args, t_token *token, int *reading);
 
 t_env		*init_env(char **envp);
 t_env		*create_env_node(char *env_str);
