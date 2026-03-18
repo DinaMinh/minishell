@@ -3,34 +3,51 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 15:10:36 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/18 10:43:47 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/18 14:10:25 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_minishell(t_token *token, t_args *args)
+int	g_sig = 0;
+
+static void	execute_commands(t_args *args, t_token *token)
 {
 	int	status;
 
+	ft_check_built_in(args);
+	if (ft_handle_local_vars(args, args->cmd) == 1)
+	{
+		args->return_val = 0;
+		return ;
+	}
+	status = ft_get_path(args->cmd, token);
+	if (status == 1)
+		args->return_val = status;
+	ft_exec(args, token);
+}
+
+int	ft_minishell(t_token *token, t_args *args)
+{
+	setup_interactive_signals();
 	args->input = readline(PROMPT);
 	if (!args->input)
-		rl_on_new_line();
-	add_history(args->input);
+	{
+		printf("exit\n");
+		ft_free_all(args);
+		exit(args->return_val);
+	}
+	if (args->input && *args->input)
+		add_history(args->input);
 	token = ft_lexer(args);
-	ft_expand_tokens(token, args);
+	if (token)
+		ft_expand_tokens(token, args);
 	args->cmd = ft_cmd(token, args->cmd, &args->nb_cmd);
 	if (args->cmd)
-	{
-		ft_check_built_in(args);
-		status = ft_get_path(args->cmd, token);
-		if (status == 1)
-			args->return_val = status;
-		ft_exec(args, token);
-	}
+		execute_commands(args, token);
 	ft_free_all(args);
 	ft_token_clear(&token);
 	return (0);

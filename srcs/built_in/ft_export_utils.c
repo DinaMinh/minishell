@@ -6,7 +6,7 @@
 /*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 21:09:55 by ebourdet          #+#    #+#             */
-/*   Updated: 2026/03/17 10:37:14 by ebourdet         ###   ########.fr       */
+/*   Updated: 2026/03/17 23:19:11 by ebourdet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ static int	get_env_size(t_env *env)
 	i = 0;
 	while (env)
 	{
-		i++;
+		if (env->local == false)
+			i++;
 		env = env->next;
 	}
 	return (i);
@@ -49,7 +50,8 @@ static t_env	**create_env_array(t_env *env_list, int size)
 	i = 0;
 	while (env_list)
 	{
-		arr[i++] = env_list;
+		if (env_list->local == false)
+			arr[i++] = env_list;
 		env_list = env_list->next;
 	}
 	return (arr);

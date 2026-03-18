@@ -6,17 +6,31 @@
 /*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 23:40:58 by ebourdet          #+#    #+#             */
-/*   Updated: 2026/03/17 16:32:43 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/17 23:39:49 by ebourdet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	handle_dollar(char *str, int i, char **new_str, t_args *args)
+static int	expand_normal_var(char *str, int i, char **new_str, t_args *args)
 {
 	int		len;
 	char	*var_name;
 	t_env	*node;
+
+	len = 0;
+	while (str[i + len] && (ft_isalnum(str[i + len]) || str[i + len] == '_'))
+		len++;
+	var_name = ft_substr(str, i, len);
+	node = find_env_node(args->env, var_name);
+	if (node && node->value)
+		*new_str = ft_append_str(*new_str, node->value);
+	free(var_name);
+	return (len);
+}
+
+static int	handle_dollar(char *str, int i, char **new_str, t_args *args)
+{
 	char	*status;
 
 	if (str[i] == '?')
@@ -31,15 +45,7 @@ static int	handle_dollar(char *str, int i, char **new_str, t_args *args)
 		*new_str = ft_append_char(*new_str, '$');
 		return (0);
 	}
-	len = 0;
-	while (str[i + len] && (ft_isalnum(str[i + len]) || str[i + len] == '_'))
-		len++;
-	var_name = ft_substr(str, i, len);
-	node = find_env_node(args->env, var_name);
-	if (node && node->value)
-		*new_str = ft_append_str(*new_str, node->value);
-	free(var_name);
-	return (len);
+	return (expand_normal_var(str, i, new_str, args));
 }
 
 static char	*expand_and_strip(char *str, t_args *args)

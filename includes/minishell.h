@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 16:11:03 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/18 01:09:15 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/18 14:05:50 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <sys/types.h>
 # include <fcntl.h>
 # include <stdbool.h>
+# include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -114,6 +115,8 @@ typedef struct s_args
 	t_env			*env;
 }	t_args;
 
+extern int	g_sig;
+
 t_cmd		*ft_cmd(t_token *token, t_cmd *cmd, int *nb_cmd);
 t_fd		*ft_fd_new(char *filename, t_token_type file_type);
 t_fd		*ft_fd_addback(t_fd **redir, char *filename, t_token_type file_type);
@@ -145,12 +148,12 @@ void		ft_built_in(t_args *args, t_cmd *cmd, t_token *token, int *reading);
 void		ft_built_in_only(t_args *args, t_token *token, int *reading);
 
 t_env		*init_env(char **envp);
-t_env		*create_env_node(char *env_str);
+t_env		*create_env_node(char *env_str, bool is_local);
 t_env		*find_env_node(t_env *env_list, char *key);
 char		*ft_append_char(char *str, char c);
 char		*ft_append_str(char *s1, char *s2);
 void		env_add_back(t_env **env_list, t_env *new_node);
-void		update_env(t_env **env_list, char *key, char *value);
+void		update_env(t_env **env_list, char *key, char *value, bool is_local);
 void		free_env_node(t_env *node);
 void		sort_and_print_env(t_env *env_list, int fd_out);
 void		ft_expand_tokens(t_token *tokens, t_args *args);
@@ -162,7 +165,15 @@ int			builtin_cd(char **args, t_env **env);
 int			builtin_echo(char **args, int fd_out);
 int			builtin_exit(t_args *main, t_token *token, char **cmd);
 int			is_valid_env_name(char *str);
+int			ft_handle_local_vars(t_args *args, t_cmd *cmd);
 
 void		ft_print_error_cmd(char *cmd);
+
+char		**env_list_to_array(t_env *env_list);
+void		free_env_array(char **envp);
+
+void		setup_interactive_signals(void);
+void		setup_parent_signals(void);
+void		setup_child_signals(void);
 
 #endif

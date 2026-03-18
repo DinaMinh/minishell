@@ -6,7 +6,7 @@
 /*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 22:20:36 by ebourdet          #+#    #+#             */
-/*   Updated: 2026/03/17 10:40:33 by ebourdet         ###   ########.fr       */
+/*   Updated: 2026/03/17 23:19:13 by ebourdet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,18 +58,22 @@ static void	process_export_arg(t_env **env, char *arg)
 {
 	char	*key;
 	char	*equal_pos;
+	t_env	*node;
 
 	equal_pos = ft_strchr(arg, '=');
 	if (equal_pos)
 	{
 		key = ft_substr(arg, 0, equal_pos - arg);
-		update_env(env, key, equal_pos + 1);
+		update_env(env, key, equal_pos + 1, false);
 		free(key);
 	}
 	else
 	{
-		if (!find_env_node(*env, arg))
-			update_env(env, arg, NULL);
+		node = find_env_node(*env, arg);
+		if (!node)
+			update_env(env, arg, NULL, false);
+		else
+			node->local = false;
 	}
 }
 

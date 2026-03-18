@@ -2,22 +2,22 @@ NAME := minishell
 
 SRC := main.c  \
 	
-
-SRC_BUILT_IN := env_utils.c ft_env.c  ft_export.c  ft_pwd.c  ft_unset.c \
+SRC_BUILT_IN := ft_env_utils.c ft_env.c  ft_export.c  ft_pwd.c  ft_unset.c \
 	ft_echo.c ft_exit.c ft_export_utils.c ft_cd.c
 
-SRC_EXEC := ft_clean_exit.c ft_pipe.c ft_exec_utils.c ft_exec_built_in.c \
+SRC_EXEC := ft_clean_exit.c ft_exec.c ft_exec_utils.c ft_exec_built_in.c \
 	ft_print_error.c
 
 SRC_PARSING := ft_parsing.c ft_cmd.c ft_fd.c
 
-SRC_LEXER := ft_lexer.c ft_lexer_utils.c ft_token_utils.c ft_lexer_redir.c
+SRC_LEXER := ft_lexer.c ft_lexer_utils.c ft_token_utils.c ft_lexer_redir.c \
+	ft_local_var.c ft_env_to_array.c
 
 SRC_EXPAND := ft_expand.c ft_expand_utils.c
 
 SRC_HEREDOC := ft_heredoc.c
 
-SRC_SIGNALS := 
+SRC_SIGNALS := ft_signals.c
 
 SRC_DIR := ./srcs/
 BUILT_IN_DIR := $(SRC_DIR)built_in/
@@ -89,7 +89,7 @@ $(BIN_DIR):
 
 $(BIN_DIR)$(NAME): $(OBJ) | $(BIN_DIR)
 	@echo "[COMPILING] $@ binary"
-	@$(CC) $(CFLAGS) $(OBJ) -o $(BIN_DIR)$(NAME) -Llibft -lft -lreadline
+	@$(CC) $(CFLAGS) $(OBJ) -o $(BIN_DIR)$(NAME) -L$(LIBFT_DIR) -lft -lreadline
 	@echo "-------------------------------------------------"
 	@echo "|	 Finished compiling $(NAME) ✅ 		|"
 	@echo "-------------------------------------------------"
