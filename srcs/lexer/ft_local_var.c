@@ -42,7 +42,7 @@ int	ft_handle_local_vars(t_args *args, t_cmd *cmd)
 	{
 		eq = ft_strchr(cmd->cmd[i], '=');
 		key = ft_substr(cmd->cmd[i], 0, eq - cmd->cmd[i]);
-		update_env(&args->env, key, eq + 1, true); 
+		update_env(&args->env, key, eq + 1, true);
 		free(key);
 		i++;
 	}

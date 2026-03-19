@@ -6,7 +6,7 @@ SRC_BUILT_IN := ft_env_utils.c ft_env.c  ft_export.c  ft_pwd.c  ft_unset.c \
 	ft_echo.c ft_exit.c ft_export_utils.c ft_cd.c
 
 SRC_EXEC := ft_clean_exit.c ft_exec.c ft_exec_utils.c ft_exec_built_in.c \
-	ft_print_error.c
+	ft_print_error.c ft_open_fds.c
 
 SRC_PARSING := ft_parsing.c ft_cmd.c ft_fd.c
 
@@ -15,9 +15,9 @@ SRC_LEXER := ft_lexer.c ft_lexer_utils.c ft_token_utils.c ft_lexer_redir.c \
 
 SRC_EXPAND := ft_expand.c ft_expand_utils.c
 
-SRC_HEREDOC := ft_heredoc.c
+SRC_HEREDOC := ft_heredoc.c ft_heredoc_utils.c
 
-SRC_SIGNALS := ft_signals.c
+SRC_SIGNALS := ft_signals.c ft_signals_heredoc.c
 
 SRC_DIR := ./srcs/
 BUILT_IN_DIR := $(SRC_DIR)built_in/
@@ -36,9 +36,10 @@ ALL_EXEC := $(addprefix $(EXEC_DIR), $(SRC_EXEC))
 ALL_PARSING := $(addprefix $(PARSING_DIR), $(SRC_PARSING))
 ALL_LEXER := $(addprefix $(LEXER_DIR), $(SRC_LEXER))
 ALL_EXPAND := $(addprefix $(EXPAND_DIR), $(SRC_EXPAND))
-ALL_HEREDOC := $(addprefix $(EXPAND_DIR), $(SRC_HEREDOC))
+ALL_HEREDOC := $(addprefix $(HEREDOC_DIR), $(SRC_HEREDOC))
+ALL_SIGNALS := $(addprefix $(SIGNALS_DIR), $(SRC_SIGNALS))
 
-ALL_SRCS += $(ALL_BUILT_IN) $(ALL_EXEC) $(ALL_PARSING) $(ALL_LEXER) $(ALL_EXPAND) $(ALL_HEREDOC)
+ALL_SRCS += $(ALL_BUILT_IN) $(ALL_EXEC) $(ALL_PARSING) $(ALL_LEXER) $(ALL_EXPAND) $(ALL_HEREDOC) $(ALL_SIGNALS)
 
 LIBFT := libft/libft.a
 LIBFT_DIR := libft/

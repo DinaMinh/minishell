@@ -32,7 +32,7 @@ static int	is_numeric_argument(char *str)
 
 int	builtin_exit(t_args *main, t_token *token, char **cmd)
 {
-	int exit_code;
+	int	exit_code;
 	int	last_status;
 
 	ft_putendl_fd("exit", STDERR_FILENO);

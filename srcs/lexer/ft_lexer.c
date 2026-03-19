@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:37:03 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/18 12:25:52 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/19 10:25:59 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,10 @@ static int	ft_handle_operator(t_token **token, char *line, int *i)
 			err = ft_token_addback(token, ft_strdup("|"), TOKEN_PIPE);
 			(*i)++;
 		}
-		else if (line[*i] == '<') 
+		else if (line[*i] == '<')
 			err = ft_handle_redir(token, line, i, TOKEN_REDIR_IN);
 		else if (line[*i] == '>')
 			err = ft_handle_redir(token, line, i, TOKEN_REDIR_OUT);
-
 	}
 	return (err);
 }

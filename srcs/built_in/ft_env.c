@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int builtin_env(t_env *env_list, int fd_out)
+int	builtin_env(t_env *env_list, int fd_out)
 {
 	t_env	*current;
 

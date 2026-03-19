@@ -23,8 +23,11 @@ t_fd	*ft_fd_new(char *filename, t_token_type file_type)
 		node->filename = ft_strdup(filename);
 	else
 		node->filename = filename;
-	if (!filename)
+	if (!node->filename)
+	{
+		free(node);
 		return (NULL);
+	}
 	node->file_type = file_type;
 	return (node);
 }

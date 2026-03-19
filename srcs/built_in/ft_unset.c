@@ -6,7 +6,7 @@
 /*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 10:35:10 by ebourdet          #+#    #+#             */
-/*   Updated: 2026/03/17 10:40:44 by ebourdet         ###   ########.fr       */
+/*   Updated: 2026/03/19 10:24:09 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ int	builtin_unset(t_args *cmd_node, t_env **env_list)
 	i = 1;
 	if (args[1] == NULL)
 		return (0);
-
 	while (args[i] != NULL)
 	{
 		if (!is_valid_env_name(args[i]) || ft_strchr(args[i], '='))

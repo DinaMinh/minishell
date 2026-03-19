@@ -1,18 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchar.c                                       :+:      :+:    :+:   */
+/*   ft_signals_heredoc.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/10 17:37:35 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/19 10:18:11 by dminh            ###   ########.fr       */
+/*   Created: 2026/03/19 10:28:46 by dminh             #+#    #+#             */
+/*   Updated: 2026/03/19 10:29:16 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-int	ft_putchar(char c)
+static void	heredoc_sigint(int sig)
 {
-	return (write(1, &c, 1));
+	g_sig = sig;
+	ft_putstr_fd("\n", STDOUT_FILENO);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	exit(130);
+}
+
+void	setup_heredoc_signals(void)
+{
+	signal(SIGINT, heredoc_sigint);
+	signal(SIGQUIT, SIG_IGN);
 }

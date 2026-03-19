@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	ft_redir_clear(t_fd **redir) 
+void	ft_redir_clear(t_fd **redir)
 {
 	t_fd	*tmp;
 
@@ -28,6 +28,7 @@ void	ft_redir_clear(t_fd **redir)
 		*redir = tmp;
 	}
 }
+
 void	ft_cmd_clear(t_cmd **head)
 {
 	t_cmd	*tmp;
