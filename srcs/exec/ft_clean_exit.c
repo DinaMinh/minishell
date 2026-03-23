@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 18:09:13 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/18 13:32:23 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/20 12:28:26 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,10 @@ int	ft_exit(t_args *args, t_token *token, int exit_code)
 		free_env_node(args->env);
 		args->env = tmp;
 	}
+	if (args->dup_in != -1)
+		close(args->dup_in);
+	if (args->dup_out != -1)
+		close(args->dup_out);
 	ft_token_clear(&token);
 	rl_clear_history();
 	exit(exit_code);

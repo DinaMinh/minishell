@@ -28,6 +28,7 @@ t_fd	*ft_fd_new(char *filename, t_token_type file_type)
 		free(node);
 		return (NULL);
 	}
+	node->fd = -1;
 	node->file_type = file_type;
 	return (node);
 }

@@ -24,7 +24,7 @@ static void	execute_commands(t_args *args, t_token *token)
 		args->return_val = 0;
 		return ;
 	}
-	status = ft_get_path(args->cmd, token);
+	status = ft_get_path(args, args->cmd, token);
 	if (status == 1)
 		args->return_val = status;
 	ft_exec(args, token);
@@ -64,7 +64,7 @@ int	ft_minishell(t_token *token, t_args *args)
 	if (token)
 	{
 		args->token_head = token;
-		ft_expand_tokens(token, args);
+		ft_expand_tokens(&token, args, false);
 	}
 	ft_count_heredocs(token, args);
 	args->cmd = ft_cmd(token, args, args->cmd, &args->nb_cmd);
@@ -82,6 +82,8 @@ int	main(int ac, char **av, char **envp)
 
 	ft_memset(&args, 0, sizeof(args));
 	token = NULL;
+	args.dup_in = -1;
+	args.dup_out = -1;
 	args.envp = envp;
 	args.env = init_env(envp);
 	if (ac != 1 || av[1])

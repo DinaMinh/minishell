@@ -6,7 +6,7 @@
 /*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 23:40:58 by ebourdet          #+#    #+#             */
-/*   Updated: 2026/03/17 23:39:49 by ebourdet         ###   ########.fr       */
+/*   Updated: 2026/03/20 15:28:35 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static int	expand_normal_var(char *str, int i, char **new_str, t_args *args)
 	return (len);
 }
 
-static int	handle_dollar(char *str, int i, char **new_str, t_args *args)
+int	handle_dollar(char *str, int i, char **new_str, t_args *args)
 {
 	char	*status;
 
@@ -48,7 +48,7 @@ static int	handle_dollar(char *str, int i, char **new_str, t_args *args)
 	return (expand_normal_var(str, i, new_str, args));
 }
 
-static char	*expand_and_strip(char *str, t_args *args)
+char	*expand_and_strip(char *str, t_args *args)
 {
 	int		i;
 	int		in_sq;
@@ -74,23 +74,34 @@ static char	*expand_and_strip(char *str, t_args *args)
 	return (res);
 }
 
-void	ft_expand_tokens(t_token *tokens, t_args *args)
+static char	*ft_handle_heredoc(t_token *token, char *str)
+{
+	if (ft_strchr(str, '\'') || ft_strchr(str, '"'))
+		return (ft_strip_quotes_delimiter(str));
+	token->exp_heredoc = true;
+	return (str);
+}
+
+void	ft_expand_tokens(t_token **tokens, t_args *args, bool heredoc)
 {
 	t_token	*tmp;
+	t_token	*next_node;
 	char	*expanded;
 
-	tmp = tokens;
+	tmp = *tokens;
+	expanded = NULL;
 	while (tmp)
 	{
-		if (tmp->type == TOKEN_WORD || tmp->type == TOKEN_FILENAME)
+		next_node = tmp->next;
+		if (heredoc)
 		{
-			expanded = expand_and_strip(tmp->content, args);
-			free(tmp->content);
-			if (!expanded)
-				tmp->content = ft_strdup("");
-			else
-				tmp->content = expanded;
+			tmp->content = ft_handle_heredoc(tmp, tmp->content);
+			heredoc = false;
 		}
-		tmp = tmp->next;
+		else if (tmp->type == TOKEN_WORD || tmp->type == TOKEN_FILENAME)
+			ft_expand_word(expanded, tmp, tokens, args);
+		else if (tmp->type == TOKEN_HEREDOC)
+			heredoc = true;
+		tmp = next_node;
 	}
 }

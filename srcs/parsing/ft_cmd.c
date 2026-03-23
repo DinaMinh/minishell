@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 10:24:34 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/18 23:47:29 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/20 16:11:45 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@ t_cmd	*ft_init_cmd(t_fd *redir, int size)
 		return (NULL);
 	node->cmd = ft_calloc(size + 1, sizeof(*node->cmd));
 	if (!node->cmd)
+	{
+		free(node);
 		return (NULL);
+	}
 	node->redir = redir;
 	return (node);
 }
@@ -63,15 +66,19 @@ t_cmd	*ft_get_cmd_size(t_token *token, t_args *args)
 
 	redir = NULL;
 	size = 0;
+	if (token && ft_check_pipe(token, args))
+		return (NULL);
 	while (token && token->type != TOKEN_PIPE)
 	{
 		if (token->type == TOKEN_WORD)
 			size++;
-		else
+		else if (ft_check_next_token(token, args))
 		{
-			if (ft_check_redir(&token, &redir, args))
-				return (NULL);
+			ft_redir_clear(&redir);
+			return (NULL);
 		}
+		else if (ft_check_redir(&token, &redir, args))
+			return (ft_redir_clear(&redir), NULL);
 		token = token->next;
 	}
 	cmd = ft_init_cmd(redir, size);

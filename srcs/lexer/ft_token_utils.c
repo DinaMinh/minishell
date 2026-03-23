@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:43:04 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/05 14:18:59 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/20 15:29:35 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ t_token	*ft_token_new(char *str, t_token_type type)
 		return (NULL);
 	node->content = str;
 	node->type = type;
+	node->exp_heredoc = false;
 	node->next = NULL;
 	return (node);
 }
@@ -61,4 +62,42 @@ void	ft_token_clear(t_token **head)
 		*head = tmp;
 	}
 	*head = NULL;
+}
+
+void	ft_token_del(t_token **head, t_token *to_delete)
+{
+	t_token	*current;
+
+	if (!head || !*head || !to_delete)
+		return ;
+	if (*head == to_delete)
+	{
+		*head = to_delete->next;
+		if (to_delete->content)
+			free(to_delete->content);
+		free(to_delete);
+		return ;
+	}
+	current = *head;
+	while (current && current->next != to_delete)
+		current = current->next;
+	if (current && current->next == to_delete)
+	{
+		current->next = to_delete->next;
+		if (to_delete->content)
+			free(to_delete->content);
+		free(to_delete);
+	}
+}
+
+void	ft_expand_word(char *expanded, t_token *tmp,
+	t_token **tokens, t_args *args)
+{
+	expanded = expand_and_strip(tmp->content, args);
+	free(tmp->content);
+	tmp->content = NULL;
+	if (!expanded)
+		ft_token_del(tokens, tmp);
+	else
+		tmp->content = expanded;
 }

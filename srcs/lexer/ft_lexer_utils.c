@@ -31,8 +31,13 @@ int	ft_add_word(t_token **token, int len, char *line)
 	char	*res;
 
 	res = ft_substr(line, 0, len);
-	if (!res || ft_token_addback(token, res, TOKEN_WORD))
+	if (!res)
 		return (false);
+	if (ft_token_addback(token, res, TOKEN_WORD))
+	{
+		free(res);
+		return (false);
+	}
 	return (true);
 }
 

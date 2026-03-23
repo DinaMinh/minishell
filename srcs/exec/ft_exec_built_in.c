@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 17:39:26 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/19 11:14:49 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/23 12:17:24 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,18 @@ static void	ft_built_in_cmds(t_args *args, t_cmd *cmd, t_token *token)
 		builtin_exit(args, token, cmd->cmd);
 }
 
-static int	ft_check_dup(t_args *args, int input, int output)
+static int	ft_check_dup(t_args *args, int *input, int *output)
 {
-	if (input < 0 || output < 0)
+	*input = dup(STDIN_FILENO);
+	*output = dup(STDOUT_FILENO);
+	if (*input < 0 || *output < 0)
 	{
 		args->return_val = 1;
 		perror("minishell: dup");
-		if (input >= 0)
-			close(input);
-		if (output >= 0)
-			close(output);
+		if (*input >= 0)
+			close(*input);
+		if (*output >= 0)
+			close(*output);
 		return (1);
 	}
 	return (EXIT_SUCCESS);
@@ -57,29 +59,30 @@ static void	ft_reset_dup(int input, int output)
 
 void	ft_built_in_only(t_args *args, t_token *token, int *reading)
 {
-	int	input;
-	int	output;
-
-	input = dup(STDIN_FILENO);
-	output = dup(STDOUT_FILENO);
-	if (ft_check_dup(args, input, output))
-		return ;
 	if (args->cmd->redir)
 	{
-		if (ft_open_fds(args->cmd, args->fd))
-		{
-			dup2(input, STDIN_FILENO);
-			dup2(output, STDOUT_FILENO);
-			close(input);
-			close(output);
-			args->return_val = 1;
+		if (ft_check_dup(args, &args->dup_in, &args->dup_out))
 			return ;
+		if (args->cmd->redir)
+		{
+			if (ft_open_fds(args->cmd, args->fd))
+			{
+				dup2(args->dup_in, STDIN_FILENO);
+				dup2(args->dup_out, STDOUT_FILENO);
+				close(args->dup_in);
+				close(args->dup_out);
+				ft_close_redir(args->cmd->redir);
+				args->return_val = 1;
+				return ;
+			}
 		}
 	}
 	ft_built_in_cmds(args, NULL, token);
 	if (args->cmd->redir)
+	{
 		ft_close_fds(args->cmd, args->fd, reading);
-	ft_reset_dup(input, output);
+		ft_reset_dup(args->dup_in, args->dup_out);
+	}
 }
 
 void	ft_built_in(t_args *args, t_cmd *cmd, t_token *token, int *reading)

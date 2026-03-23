@@ -17,8 +17,13 @@ static int	ft_add_filename(t_token **token, int len, char *line)
 	char	*res;
 
 	res = ft_substr(line, 0, len);
-	if (!res || ft_token_addback(token, res, TOKEN_FILENAME))
+	if (!res)
 		return (false);
+	if (ft_token_addback(token, res, TOKEN_FILENAME))
+	{
+		free(res);
+		return (false);
+	}
 	return (true);
 }
 
@@ -71,7 +76,7 @@ int	ft_handle_redir(t_token **token, char *line, int *i, t_token_type type)
 	}
 	while (line[*i] && ft_is_blank(line[*i]))
 		(*i)++;
-	if (!line[*i])
+	if (!line[*i] || ft_is_operator(line[*i]))
 		return (0);
 	err = ft_handle_filename(token, line, i);
 	return (err);

@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 14:30:16 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/19 10:24:50 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/20 13:12:31 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,19 @@ static void	ft_child(t_cmd *cmd, t_args *args, t_token *token, int *reading)
 	if (*reading != 0)
 		dup2(*reading, STDIN_FILENO);
 	if (ft_open_fds(cmd, args->fd))
+	{
+		ft_close_fds(cmd, args->fd, reading);
+		close(STDIN_FILENO);
+		close(STDOUT_FILENO);
 		ft_exit(args, token, EXIT_FAILURE);
+	}
 	ft_close_fds(cmd, args->fd, reading);
 	if (!cmd || !cmd->cmd || !cmd->cmd[0])
+	{
+		close(STDIN_FILENO);
+		close(STDOUT_FILENO);
 		ft_exit(args, token, 0);
+	}
 	execve(cmd->path, cmd->cmd, args->envp);
 	ft_print_error_cmd(cmd->cmd[0]);
 	ft_exit(args, token, 127);
@@ -58,10 +67,11 @@ static int	ft_exec_loop(t_args *args, t_token *token, int *reading)
 	while (i < args->nb_cmd)
 	{
 		if (ft_pipe(cmd, args))
-			return i;
+			return (i);
 		pid = fork();
 		if (ft_check_fork(args, cmd, pid))
-			return i;
+			return (i);
+		args->last_pid = pid;
 		if (pid == CHILD)
 			ft_exec_child(args, cmd, token, reading);
 		else
@@ -76,6 +86,7 @@ static int	ft_exec_loop(t_args *args, t_token *token, int *reading)
 void	ft_exec(t_args *args, t_token *token)
 {
 	int		i;
+	int		pid;
 	int		status;
 	int		reading;
 	bool	print;
@@ -83,20 +94,17 @@ void	ft_exec(t_args *args, t_token *token)
 	i = -1;
 	reading = 0;
 	print = false;
-	if (args->nb_cmd == 1)
-	{
-		if (args->cmd->built_in)
-		{
-			ft_built_in_only(args, token, &reading);
-			return ;
-		}
-	}
+	if (ft_check_nb_cmd(args, token, &reading))
+		return ;
 	args->nb_forks = ft_exec_loop(args, token, &reading);
 	while (++i < args->nb_forks)
 	{
-		wait(&status);
+		pid = wait(&status);
 		if (WIFEXITED(status))
-			args->return_val = WEXITSTATUS(status);
+		{
+			if (pid == args->last_pid)
+				args->return_val = WEXITSTATUS(status);
+		}
 		else if (WIFSIGNALED(status))
 			ft_print_interrupt(args, status, &print);
 	}

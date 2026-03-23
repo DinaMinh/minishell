@@ -6,13 +6,14 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 12:44:13 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/19 09:57:21 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/20 11:53:57 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	ft_heredoc_child(char *delimiter, char *filename, t_args *args)
+static void	ft_heredoc_child(char *delimiter, char *filename, t_args *args,
+			bool expand)
 {
 	char	*input;
 	int		fd;
@@ -31,7 +32,8 @@ static void	ft_heredoc_child(char *delimiter, char *filename, t_args *args)
 			free(filename);
 			ft_exit(args, args->token_head, args->return_val);
 		}
-
+		if (input && expand)
+			input = ft_expand_heredoc(input, args);
 		if (input)
 			len = ft_strlen(input);
 		write(fd, input, len);
@@ -40,7 +42,8 @@ static void	ft_heredoc_child(char *delimiter, char *filename, t_args *args)
 	}
 }
 
-static int	ft_heredoc(char *delimiter, char *filename, t_args *args)
+static int	ft_heredoc(char *delimiter, char *filename, t_args *args,
+			bool expand)
 {
 	int	pid;
 	int	status;
@@ -55,7 +58,7 @@ static int	ft_heredoc(char *delimiter, char *filename, t_args *args)
 		return (EXIT_FAILURE);
 	}
 	if (pid == CHILD)
-		ft_heredoc_child(delimiter, filename, args);
+		ft_heredoc_child(delimiter, filename, args, expand);
 	else
 	{
 		waitpid(pid, &status, 0);
@@ -74,10 +77,18 @@ int	ft_init_heredoc(t_token **token, t_fd **redir, t_args *args,
 	filename = ft_set_heredoc_name(args);
 	if (!filename)
 		return (1);
-	if (ft_heredoc((*token)->content, filename, args))
+	if (ft_heredoc((*token)->content, filename, args, (*token)->exp_heredoc))
+	{
+		unlink(filename);
+		free(filename);
 		return (1);
+	}
 	if (!ft_fd_addback(redir, filename, type))
+	{
+		unlink(filename);
+		free(filename);
 		return (1);
+	}
 	free(filename);
 	args->heredoc++;
 	return (0);

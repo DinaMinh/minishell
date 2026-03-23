@@ -6,14 +6,14 @@ SRC_BUILT_IN := ft_env_utils.c ft_env.c  ft_export.c  ft_pwd.c  ft_unset.c \
 	ft_echo.c ft_exit.c ft_export_utils.c ft_cd.c
 
 SRC_EXEC := ft_clean_exit.c ft_exec.c ft_exec_utils.c ft_exec_built_in.c \
-	ft_print_error.c ft_open_fds.c
+	ft_print_error.c ft_open_fds.c ft_check_nb_cmd.c
 
-SRC_PARSING := ft_parsing.c ft_cmd.c ft_fd.c
+SRC_PARSING := ft_parsing.c ft_cmd.c ft_fd.c ft_parsing_utils.c ft_check_syntax.c
 
 SRC_LEXER := ft_lexer.c ft_lexer_utils.c ft_token_utils.c ft_lexer_redir.c \
 	ft_local_var.c ft_env_to_array.c
 
-SRC_EXPAND := ft_expand.c ft_expand_utils.c
+SRC_EXPAND := ft_expand.c ft_expand_utils.c ft_expand_heredoc.c
 
 SRC_HEREDOC := ft_heredoc.c ft_heredoc_utils.c
 
@@ -59,13 +59,15 @@ INCLUDES := includes/
 
 LIBFT_INCLUDES := libft/includes/
 
+HEADER := $(INCLUDES)minishell.h
+
 CC := cc
 
 CFLAGS := -Wall -Wextra -Werror -I$(INCLUDES) -I$(LIBFT_INCLUDES)
 
 DEBUG_FLAGS := -g
 
-MAKEFLAGS += --no-print-directory
+MAKEFLAGS += --no-print-directory -j
 
 CREATE_OBJ_DIR := mkdir -p $(OBJ_DIR)
 
@@ -73,11 +75,11 @@ CREATE_BIN_DIR := mkdir -p $(BIN_DIR)
 
 all: $(LIBFT) $(BIN_DIR)$(NAME)
 
-$(OBJ_DIR)%.o: %.c | $(OBJ_DIR)
+$(OBJ_DIR)%.o: %.c $(HEADER) | $(OBJ_DIR)
 	@echo "[COMPILING] $@"
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-$(LIBFT): $(LIBFT_DIR)
+$(LIBFT):
 	@$(MAKE) -C $(LIBFT_DIR)
 
 $(OBJ_DIR): 
@@ -88,7 +90,7 @@ $(BIN_DIR):
 	@echo "[CREATING OBJECT DIRECTORY]"
 	@$(CREATE_BIN_DIR)
 
-$(BIN_DIR)$(NAME): $(OBJ) | $(BIN_DIR)
+$(BIN_DIR)$(NAME): $(OBJ) $(LIBFT) | $(BIN_DIR)
 	@echo "[COMPILING] $@ binary"
 	@$(CC) $(CFLAGS) $(OBJ) -o $(BIN_DIR)$(NAME) -L$(LIBFT_DIR) -lft -lreadline
 	@echo "-------------------------------------------------"
@@ -120,4 +122,4 @@ re:
 	$(MAKE) -C ./ fclean
 	$(MAKE) -C ./ all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re $(LIBFT_DIR)

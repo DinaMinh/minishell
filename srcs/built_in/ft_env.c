@@ -19,7 +19,7 @@ int	builtin_env(t_env *env_list, int fd_out)
 	current = env_list;
 	while (current != NULL)
 	{
-		if (current->value != NULL)
+		if (current->value != NULL && current->value[0])
 		{
 			ft_putstr_fd(current->key, fd_out);
 			ft_putchar_fd('=', fd_out);

@@ -6,7 +6,7 @@
 /*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 19:05:11 by ebourdet          #+#    #+#             */
-/*   Updated: 2026/03/17 23:19:07 by ebourdet         ###   ########.fr       */
+/*   Updated: 2026/03/20 15:24:24 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,19 +66,40 @@ static void	update_pwd_vars(t_env **env, char *old_pwd)
 	}
 }
 
+static int	ft_check_home(t_env *env, char **path)
+{
+	t_env	*home_node;
+
+	home_node = find_env_node(env, "HOME");
+	if (!home_node || !home_node->value)
+	{
+		ft_putstr_fd("minishell: cd: HOME not set\n", 2);
+		return (1);
+	}
+	*path = home_node->value;
+	return (0);
+}
+
 int	builtin_cd(char **args, t_env **env)
 {
 	char	*old_pwd;
+	char	*path;
 
-	if (!args[1])
-		return (0);
-	if (args[2])
+	if (args[1] && args[2])
 	{
 		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
 		return (1);
 	}
+	path = NULL;
+	if (!args[1])
+	{
+		if (ft_check_home(*env, &path))
+			return (1);
+	}
+	else
+		path = args[1];
 	old_pwd = getcwd(NULL, 0);
-	if (chdir(args[1]) == -1)
+	if (chdir(path) == -1)
 	{
 		perror("minishell: cd");
 		free(old_pwd);

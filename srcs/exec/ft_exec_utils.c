@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 16:07:19 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/19 11:45:57 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/20 00:45:51 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ void	ft_close_redir(t_fd *redir)
 {
 	while (redir)
 	{
-		close(redir->fd);
+		if (redir->fd != -1)
+			close(redir->fd);
 		redir = redir->next;
 	}
 }
