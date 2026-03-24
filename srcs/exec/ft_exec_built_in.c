@@ -49,12 +49,12 @@ static int	ft_check_dup(t_args *args, int *input, int *output)
 	return (EXIT_SUCCESS);
 }
 
-static void	ft_reset_dup(int input, int output)
+static void	ft_reset_dup(int *input, int *output)
 {
-	dup2(input, STDIN_FILENO);
-	dup2(output, STDOUT_FILENO);
-	close(input);
-	close(output);
+	dup2(*input, STDIN_FILENO);
+	dup2(*output, STDOUT_FILENO);
+	close(*input);
+	close(*output);
 }
 
 void	ft_built_in_only(t_args *args, t_token *token, int *reading)
@@ -81,7 +81,7 @@ void	ft_built_in_only(t_args *args, t_token *token, int *reading)
 	if (args->cmd->redir)
 	{
 		ft_close_fds(args->cmd, args->fd, reading);
-		ft_reset_dup(args->dup_in, args->dup_out);
+		ft_reset_dup(&args->dup_in, &args->dup_out);
 	}
 }
 
