@@ -6,7 +6,7 @@
 /*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 10:38:21 by ebourdet          #+#    #+#             */
-/*   Updated: 2026/03/19 10:22:11 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/25 21:30:16 by ebourdet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,26 @@ void	env_add_back(t_env **env_list, t_env *new_node)
 	current->next = new_node;
 }
 
+static void	increment_shlvl(t_env **env_list)
+{
+	t_env	*shlvl;
+	int		new_value;
+	char	*new_value_str;
+
+	shlvl = find_env_node(*env_list, "SHLVL");
+	if (shlvl && shlvl->value)
+	{
+		new_value = ft_atoi(shlvl->value) + 1;
+		if (new_value < 0)
+			new_value = 0;
+		new_value_str = ft_itoa(new_value);
+		update_env(env_list, "SHLVL", new_value_str, false);
+		free(new_value_str);
+	}
+	else
+		update_env(env_list, "SHLVL", "1", false);
+}
+
 t_env	*init_env(char **envp)
 {
 	t_env	*env_list;
@@ -81,5 +101,6 @@ t_env	*init_env(char **envp)
 			env_add_back(&env_list, new_node);
 		i++;
 	}
+	increment_shlvl(&env_list);
 	return (env_list);
 }
