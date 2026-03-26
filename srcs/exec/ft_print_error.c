@@ -28,6 +28,15 @@ void	ft_print_not_exec(char *cmd)
 
 void	ft_handle_errors(t_args *args, t_token *token, t_cmd *cmd)
 {
+	struct stat	path_stat;
+
+	if (stat(cmd->path, &path_stat) == 0 && S_ISDIR(path_stat.st_mode))
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(cmd->path, STDERR_FILENO);
+		ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+		ft_exit(args, token, 126);
+	}
 	if (access(cmd->path, F_OK) != 0)
 	{
 		ft_print_error_cmd(cmd->path);

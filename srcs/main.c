@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 15:10:36 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/26 10:23:42 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/26 23:25:08 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,21 @@ static void	ft_count_heredocs(t_token *token, t_args *args)
 	}
 }
 
+static void	ft_process_token(t_args *args, t_token *token)
+{
+	args->token_head = token;
+	if (ft_valid_syntax(token, args))
+		return ;
+	ft_expand_tokens(&token, args, false);
+	ft_count_heredocs(token, args);
+	args->cmd = ft_cmd(token, args, args->cmd, &args->nb_cmd);
+	if (args->cmd)
+		execute_commands(args, token);
+}
+
 int	ft_minishell(t_token *token, t_args *args)
 {
 	g_sig = 0;
-	setup_interactive_signals();
 	args->input = readline(PROMPT);
 	if (g_sig != 0)
 		args->return_val = g_sig + 128;
@@ -62,14 +73,7 @@ int	ft_minishell(t_token *token, t_args *args)
 		add_history(args->input);
 	token = ft_lexer(args);
 	if (token)
-	{
-		args->token_head = token;
-		ft_expand_tokens(&token, args, false);
-	}
-	ft_count_heredocs(token, args);
-	args->cmd = ft_cmd(token, args, args->cmd, &args->nb_cmd);
-	if (args->cmd)
-		execute_commands(args, token);
+		ft_process_token(args, token);
 	ft_free_all(args);
 	ft_token_clear(&token);
 	return (0);
@@ -85,6 +89,7 @@ int	main(int ac, char **av, char **envp)
 	args.dup_in = -1;
 	args.dup_out = -1;
 	args.env = init_env(envp, &args);
+	setup_interactive_signals();
 	if (ac != 1 || av[1])
 		return (EXIT_FAILURE);
 	while (true)

@@ -6,7 +6,7 @@
 /*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 16:11:03 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/26 14:58:17 by ebourdet         ###   ########.fr       */
+/*   Updated: 2026/03/26 23:23:59 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "libft.h"
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <sys/types.h>
 # include <fcntl.h>
 # include <stdbool.h>
@@ -139,6 +140,7 @@ int			ft_check_pipe(t_token *token, t_args *args);
 int			ft_get_path(t_args *args, t_cmd *cmd, t_token *token);
 int			ft_check_built_in(t_args *args);
 int			ft_path_loop(t_cmd *cmd, char **paths, char *add_slash, int i);
+int			ft_valid_syntax(t_token *token, t_args *args);
 void		ft_free_paths(char **paths);
 void		ft_free_all(t_args *args);
 

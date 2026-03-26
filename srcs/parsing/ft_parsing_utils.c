@@ -30,7 +30,7 @@ char	*ft_check_env_path(t_env *env, t_cmd *cmd)
 	if (!env)
 	{
 		cmd->path = ft_set_default_path(cmd);
-		if (!cmd)
+		if (!cmd->path)
 			return (NULL);
 	}
 	else
