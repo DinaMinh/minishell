@@ -64,6 +64,7 @@ void	ft_free_all(t_args *args)
 int	ft_exit(t_args *args, t_token *token, int exit_code)
 {
 	t_env	*tmp;
+	int		i;
 
 	ft_free_all(args);
 	while (args->env)
@@ -76,6 +77,10 @@ int	ft_exit(t_args *args, t_token *token, int exit_code)
 		close(args->dup_in);
 	if (args->dup_out != -1)
 		close(args->dup_out);
+	i = 0;
+	while (args->envp[i])
+		i++;
+	ft_free_envp(args->envp, i);
 	ft_token_clear(&token);
 	rl_clear_history();
 	exit(exit_code);

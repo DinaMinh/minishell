@@ -29,6 +29,7 @@
 # define PATH_LEN 10
 # define EXIT "exit"
 # define EXIT_LEN 4
+# define NOT_EXEC 126
 
 # define INFILE 1
 # define CMD_NOT_FOUND "command not found"
@@ -130,6 +131,9 @@ t_cmd		*ft_cmd(t_token *token, t_args *args, t_cmd *cmd, int *nb_cmd);
 t_fd		*ft_fd_new(char *filename, t_token_type file_type);
 t_fd		*ft_fd_addback(t_fd **redir, char *filename,
 				t_token_type file_type);
+char		*ft_set_default_path(t_cmd *cmd);
+char		*ft_check_env_path(t_env *env, t_cmd *cmd);
+int			ft_check_path(t_cmd *cmd, t_env *env);
 int			ft_check_next_token(t_token *token, t_args *args);
 int			ft_check_pipe(t_token *token, t_args *args);
 int			ft_get_path(t_args *args, t_cmd *cmd, t_token *token);
@@ -176,11 +180,13 @@ int			ft_pipe(t_cmd *cmd, t_args *args);
 int			ft_open_fds(t_cmd *cmd, int fd[2]);
 
 /* BUILT-IN */
-t_env		*init_env(char **envp);
+t_env		*init_env(char **envp, t_args *args);
 t_env		*create_env_node(char *env_str, bool is_local);
 t_env		*find_env_node(t_env *env_list, char *key);
+char		**ft_shlvl_update(t_env **env_list, char **envp, char *new_shlvl);
 char		*ft_append_char(char *str, char c);
 char		*ft_append_str(char *s1, char *s2);
+void		*ft_free_envp(char **envp, int index);
 void		env_add_back(t_env **env_list, t_env *new_node);
 void		update_env(t_env **env_list, char *key, char *value, bool is_local);
 void		free_env_node(t_env *node);
@@ -200,6 +206,8 @@ int			ft_check_nb_cmd(t_args *args, t_token *token, int *reading);
 char		*expand_and_strip(char *str, t_args *args);
 
 void		ft_print_error_cmd(char *cmd);
+void		ft_print_not_exec(char *cmd);
+void		ft_handle_errors(t_args *args, t_token *token, t_cmd *cmd);
 void		ft_expand_word(char *expanded, t_token *tmp,
 				t_token **tokens, t_args *args);
 

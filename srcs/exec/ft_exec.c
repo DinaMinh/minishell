@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 14:30:16 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/20 13:12:31 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/26 11:59:32 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,7 @@ static void	ft_child(t_cmd *cmd, t_args *args, t_token *token, int *reading)
 		ft_exit(args, token, 0);
 	}
 	execve(cmd->path, cmd->cmd, args->envp);
-	ft_print_error_cmd(cmd->cmd[0]);
-	ft_exit(args, token, 127);
+	ft_handle_errors(args, token, cmd);
 }
 
 static void	ft_parent(t_cmd *cmd, int fd[2], int *reading)

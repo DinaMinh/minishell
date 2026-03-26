@@ -3,7 +3,7 @@ NAME := minishell
 SRC := main.c  \
 	
 SRC_BUILT_IN := ft_env_utils.c ft_env.c  ft_export.c  ft_pwd.c  ft_unset.c \
-	ft_echo.c ft_exit.c ft_export_utils.c ft_cd.c
+	ft_echo.c ft_exit.c ft_export_utils.c ft_cd.c ft_shlvl.c
 
 SRC_EXEC := ft_clean_exit.c ft_exec.c ft_exec_utils.c ft_exec_built_in.c \
 	ft_print_error.c ft_open_fds.c ft_check_nb_cmd.c

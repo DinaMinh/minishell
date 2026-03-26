@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/19 21:48:05 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/19 22:16:12 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/26 12:30:16 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,37 @@ void	ft_free_paths(char **paths)
 		i++;
 	}
 	free(paths);
+}
+
+char	*ft_check_env_path(t_env *env, t_cmd *cmd)
+{
+	if (!env)
+	{
+		cmd->path = ft_set_default_path(cmd);
+		if (!cmd)
+			return (NULL);
+	}
+	else
+	{
+		if (ft_check_path(cmd, env))
+			return (NULL);
+	}
+	return (cmd->path);
+}
+
+char	*ft_set_default_path(t_cmd *cmd)
+{
+	char	*default_path;
+	char	*add_slash;
+
+	add_slash = ft_strdup("./");
+	if (!add_slash)
+		return (NULL);
+	default_path = ft_strjoin(add_slash, cmd->cmd[0]);
+	free(add_slash);
+	if (!default_path)
+		return (NULL);
+	return (default_path);
 }
 
 int	ft_path_loop(t_cmd *cmd, char **paths, char *add_slash, int i)
@@ -47,6 +78,8 @@ int	ft_path_loop(t_cmd *cmd, char **paths, char *add_slash, int i)
 			i++;
 		}
 	}
-	cmd->path = ft_strdup("");
+	cmd->path = ft_strdup(cmd->cmd[0]);
+	if (!cmd->path)
+		return (EXIT_FAILURE);
 	return (0);
 }

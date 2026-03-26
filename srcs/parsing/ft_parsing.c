@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 11:45:38 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/20 11:46:17 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/26 12:15:29 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int	ft_get_path(t_args *args, t_cmd *cmd, t_token *token)
 	if (!cmd->built_in)
 	{
 		env = find_env_node(args->env, "PATH");
-		if (ft_check_path(cmd, env))
+		if (!ft_check_env_path(env, cmd))
 			return (EXIT_FAILURE);
 	}
 	if (cmd->next)

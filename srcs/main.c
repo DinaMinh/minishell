@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 15:10:36 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/19 00:36:27 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/26 10:23:42 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	ft_count_heredocs(t_token *token, t_args *args)
 			args->total_heredoc++;
 		token = token->next;
 	}
-	if (args->total_heredoc >= 16)
+	if (args->total_heredoc > 16)
 	{
 		ft_putstr_fd("minishell: maximum here-document count exceeded", 2);
 		ft_exit(args, token, 2);
@@ -84,8 +84,7 @@ int	main(int ac, char **av, char **envp)
 	token = NULL;
 	args.dup_in = -1;
 	args.dup_out = -1;
-	args.envp = envp;
-	args.env = init_env(envp);
+	args.env = init_env(envp, &args);
 	if (ac != 1 || av[1])
 		return (EXIT_FAILURE);
 	while (true)
