@@ -6,7 +6,7 @@
 /*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 10:36:41 by ebourdet          #+#    #+#             */
-/*   Updated: 2026/03/17 10:36:45 by ebourdet         ###   ########.fr       */
+/*   Updated: 2026/03/26 14:32:52 by ebourdet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ int	builtin_pwd(int fd_out)
 	cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
 	{
-		perror("minishell: pwd");
+		ft_putstr_fd("pwd: error retrieving current directory: ", 2);
+		perror("getcwd");
 		return (1);
 	}
 	ft_putendl_fd(cwd, fd_out);

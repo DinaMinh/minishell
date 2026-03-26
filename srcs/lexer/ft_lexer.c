@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:37:03 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/19 10:25:59 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/26 13:24:55 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static int	ft_handle_word(t_token **token, char *line, int *start)
 		{
 			if (ft_handle_quotes(line, &end, &quote))
 			{
-				ft_putstr_fd("Unclosed quote. Returning to prompt\n", 2);
+				ft_putstr_fd("minishell: syntax error: unclosed quote\n", 2);
 				return (1);
 			}
 		}
@@ -90,23 +90,3 @@ t_token	*ft_lexer(t_args *args)
 	}
 	return (token_list);
 }
-//int	main(void)
-//{
-//	t_token	*node;
-//	t_token *tmp;
-//	char	*input;
-//
-//	while (true)
-//	{
-//		input = readline(PROMPT);
-//		node = ft_lexer(input);
-//		tmp = node;
-//		while (tmp)
-//		{
-//			printf("content = %s, type = %d\n", tmp->content, tmp->type);
-//			tmp = tmp->next;
-//		}
-//		ft_token_clear(&node);
-//	}
-//	return (EXIT_SUCCESS);
-//}

@@ -6,7 +6,7 @@
 /*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 19:05:11 by ebourdet          #+#    #+#             */
-/*   Updated: 2026/03/20 15:24:24 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/26 15:04:25 by ebourdet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,12 +99,8 @@ int	builtin_cd(char **args, t_env **env)
 	else
 		path = args[1];
 	old_pwd = getcwd(NULL, 0);
-	if (chdir(path) == -1)
-	{
-		perror("minishell: cd");
-		free(old_pwd);
+	if (ft_check_path_oldpwd(env, old_pwd, path))
 		return (1);
-	}
 	update_pwd_vars(env, old_pwd);
 	return (0);
 }

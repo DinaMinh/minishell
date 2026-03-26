@@ -19,7 +19,13 @@ int	ft_check_built_in(t_args *args)
 	tmp = args->cmd;
 	while (tmp && tmp->cmd)
 	{
-		if (tmp->cmd[0] && ft_strnstr(BUILT_IN_CMD, tmp->cmd[0], BUILT_IN_LEN))
+		if (tmp->cmd[0] && (!ft_strcmp("echo", tmp->cmd[0])
+				|| !ft_strcmp("cd", tmp->cmd[0])
+				|| !ft_strcmp("pwd", tmp->cmd[0])
+				|| !ft_strcmp("export", tmp->cmd[0])
+				|| !ft_strcmp("unset", tmp->cmd[0])
+				|| !ft_strcmp("env", tmp->cmd[0])
+				|| !ft_strcmp("exit", tmp->cmd[0])))
 			tmp->built_in = true;
 		tmp = tmp->next;
 	}

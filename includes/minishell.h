@@ -6,7 +6,7 @@
 /*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 16:11:03 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/20 15:22:28 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/26 14:58:17 by ebourdet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,6 +198,7 @@ int			builtin_export(t_args *cmd_node, t_env **env_list);
 int			builtin_pwd(int fd_out);
 int			builtin_unset(t_args *cmd_node, t_env **env_list);
 int			builtin_cd(char **args, t_env **env);
+int			ft_check_path_oldpwd(t_env **env, char *old_pwd, char *path);
 int			builtin_echo(char **args, int fd_out);
 int			builtin_exit(t_args *main, t_token *token, char **cmd);
 int			is_valid_env_name(char *str);
