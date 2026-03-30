@@ -6,7 +6,7 @@
 /*   By: ebourdet <ebourdet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 16:11:03 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/26 23:23:59 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/30 12:41:27 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,6 +210,7 @@ char		*expand_and_strip(char *str, t_args *args);
 
 void		ft_print_error_cmd(char *cmd);
 void		ft_print_not_exec(char *cmd);
+void		ft_print_no_such_file(t_args *args, char *cmd);
 void		ft_handle_errors(t_args *args, t_token *token, t_cmd *cmd);
 void		ft_expand_word(char *expanded, t_token *tmp,
 				t_token **tokens, t_args *args);

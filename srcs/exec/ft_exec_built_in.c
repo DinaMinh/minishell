@@ -6,7 +6,7 @@
 /*   By: dminh <dminh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 17:39:26 by dminh             #+#    #+#             */
-/*   Updated: 2026/03/23 12:17:24 by dminh            ###   ########.fr       */
+/*   Updated: 2026/03/30 12:43:33 by dminh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,23 @@ static void	ft_built_in_cmds(t_args *args, t_cmd *cmd, t_token *token)
 {
 	if (!cmd)
 		cmd = args->cmd;
-	if (ft_strncmp(cmd->cmd[0], ECHO, ECHO_LEN) == 0)
+	if (ft_strcmp(cmd->cmd[0], ECHO) == 0)
 		args->return_val = builtin_echo(cmd->cmd, STDOUT_FILENO);
-	else if (ft_strncmp(cmd->cmd[0], CD, CD_LEN) == 0)
+	else if (ft_strcmp(cmd->cmd[0], CD) == 0)
 		args->return_val = builtin_cd(cmd->cmd, &args->env);
-	else if (ft_strncmp(cmd->cmd[0], PWD, PWD_LEN) == 0)
+	else if (ft_strcmp(cmd->cmd[0], PWD) == 0)
 		args->return_val = builtin_pwd(STDOUT_FILENO);
-	else if (ft_strncmp(cmd->cmd[0], EXPORT, EXPORT_LEN) == 0)
+	else if (ft_strcmp(cmd->cmd[0], EXPORT) == 0)
 		args->return_val = builtin_export(args, &args->env);
-	else if (ft_strncmp(cmd->cmd[0], UNSET, UNSET_LEN) == 0)
+	else if (ft_strcmp(cmd->cmd[0], UNSET) == 0)
 		args->return_val = builtin_unset(args, &args->env);
-	else if (ft_strncmp(cmd->cmd[0], ENV, ENV_LEN) == 0)
-		args->return_val = builtin_env(args->env, STDOUT_FILENO);
+	else if (ft_strcmp(cmd->cmd[0], ENV) == 0)
+	{
+		if (cmd->cmd && !cmd->cmd[1])
+			args->return_val = builtin_env(args->env, STDOUT_FILENO);
+		else
+			ft_print_no_such_file(args, cmd->cmd[1]);
+	}
 	else if (ft_strncmp(cmd->cmd[0], EXIT, EXIT_LEN) == 0)
 		builtin_exit(args, token, cmd->cmd);
 }
